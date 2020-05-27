@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--TODO: update to openlegacy-providers it when integrating into openlegacy-core repository -->
+    <parent>
+        <groupId>org.openlegacy</groupId>
+        <artifactId>openlegacy-dependencies-manager</artifactId>
+        <version>4.7.0-SNAPSHOT</version> <!-- develop branch version -->
+    </parent>
+
+    <name>OpenLegacy BRM provider</name>
+    <artifactId>openlegacy-brm-rpc</artifactId>
+
+    <properties>
+        <brm.portal.version>7.5</brm.portal.version>
+    </properties>
+
+    <dependencies>
+        <!-- OpenLegacy -->
+        <dependency>
+            <groupId>org.openlegacy.impl</groupId>
+            <artifactId>impl-rpc</artifactId>
+            <version>${openlegacy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.ol</groupId>
+            <artifactId>codegen</artifactId>
+            <version>${openlegacy.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <!-- Vertx -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web-client</artifactId>
+            <version>${vertx.version}</version>
+        </dependency>
+        <!-- BRM -->
+        <dependency>
+            <groupId>com.portal</groupId>
+            <artifactId>pcmext</artifactId>
+            <version>${brm.portal.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.portal</groupId>
+            <artifactId>pcm</artifactId>
+            <version>${brm.portal.version}</version>
+        </dependency>
+        <!-- Test.Spring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Test.Vertx -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-junit5</artifactId>
+            <version>${vertx.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web</artifactId>
+            <version>${vertx.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Test.OpenLegacy -->
+        <dependency>
+            <groupId>org.openlegacy</groupId>
+            <artifactId>openlegacy-test-utils</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

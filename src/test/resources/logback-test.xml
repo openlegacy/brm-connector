@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <if condition='"${ci.profiles}".contains("travis")'>
+        <then>
+            <logger name="root" level="error" />
+        </then>
+        <else>
+            <logger name="root" level="debug" />
+            <logger name="org.apache.tomcat" level="off" />
+            <logger name="io.netty" level="off" />
+        </else>
+    </if>
+</configuration>
