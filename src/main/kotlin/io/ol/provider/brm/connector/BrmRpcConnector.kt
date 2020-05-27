@@ -40,12 +40,11 @@ class BrmRpcConnector(
 
   companion object : KLogging()
 
-  private val portalContext: PortalContext = createPortalContext(sdkProperties)
+  private val brmConnectionProperties = loadBrmConnectionProperties(sdkProperties)
+  private val portalContext: PortalContext = PortalContext()
 
   override fun close() {
-    // closes the connection
-    portalContext.close(true)
-    logger.info("PCM connection closed.")
+    closePortalContext()
   }
 
   override suspend fun send(rpcData: BrmInputRpcData, timeout: Long): RpcSendResult<BrmOutputRpcData> {
@@ -86,7 +85,9 @@ class BrmRpcConnector(
     inflist.set(FldLastName.getInst(), "Mouse")
     // Calls the opcode
     logger.debug { "Input: $inflist" }
+    connectPortalContext()
     val outflist: FList = portalContext.opcode(PortalOp.TEST_LOOPBACK, inflist)
+    closePortalContext()
     logger.debug { "Output: $outflist" }
       return RpcSendResult(
         body = BrmOutputRpcData(body = Buffer.buffer()),
@@ -110,20 +111,21 @@ class BrmRpcConnector(
     )
   }
 
-  private fun createPortalContext(sdkProperties: OLBrmProperties.ProjectBrmProperties): PortalContext {
-    return try {
-      val ctx = PortalContext()
-      ctx.connect(loadBrmConnectionProperties(sdkProperties))
+  private fun connectPortalContext() {
+    try {
+      portalContext.connect(brmConnectionProperties)
       // prints out some info about the connection
-      logger.info("""
-        Context successfully created
-        current DB: ${ctx.currentDB} 
-        user ID: ${ctx.userID}""")
-      ctx
+      logger.info("BRM connection successfully created: current DB: ${portalContext.currentDB}, user ID: ${portalContext.userID}")
     } catch (ebufex: EBufException) {
-      logger.warn("Connection to the server failed, error: $ebufex")
+      logger.warn("BRM connection to the server failed, error: $ebufex")
       throw ebufex
     }
+  }
+
+  private fun closePortalContext() {
+    // closes the connection
+    portalContext.close(true)
+    logger.info("BRM connection closed.")
   }
 
   private fun loadBrmConnectionProperties(sdkProperties: OLBrmProperties.ProjectBrmProperties): Properties {
