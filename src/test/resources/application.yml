@@ -1,4 +1,6 @@
-#ol:
-#  brm:
-#    project:
-#      test:
+ol:
+  brm:
+    project:
+      test:
+        host: localhost
+

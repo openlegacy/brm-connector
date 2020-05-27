@@ -10,8 +10,8 @@ import io.ol.provider.brm.connector.BrmRpcConnector
 import io.vertx.core.Vertx
 
 class BrmRpcConnection(
-        override val vertx: Vertx,
-        override val connector: BrmRpcConnector,
-        override val interceptorChain: RpcInterceptorChain,
-        override val timeoutProperties: TimeoutProperties
+  override val vertx: Vertx,
+  override val connector: BrmRpcConnector,
+  override val interceptorChain: RpcInterceptorChain,
+  override val timeoutProperties: TimeoutProperties
 ) : RpcConnection<BrmInputRpcData, BrmOutputRpcData>

@@ -33,8 +33,8 @@ class BrmRpcSerializer(
   }
 
   override fun serialize(
-          rpcData: BrmInputRpcData,
-          request: RpcSerializeRequest
+    rpcData: BrmInputRpcData,
+    request: RpcSerializeRequest
   ): RpcSerializeResult<BrmInputRpcData> {
     logger.debug { "BRM serialization start ${rpcData.body}" }
     // sets the root JSON Object. From now on all modifications will be performed inside of it

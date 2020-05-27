@@ -5,11 +5,11 @@
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!--TODO: update to openlegacy-providers it when integrating into openlegacy-core repository -->
     <parent>
-        <groupId>org.openlegacy</groupId>
-        <artifactId>openlegacy-dependencies-manager</artifactId>
-        <version>4.7.0-SNAPSHOT</version> <!-- develop branch version -->
+        <groupId>org.openlegacy.providers</groupId>
+        <artifactId>openlegacy-providers</artifactId>
+        <version>${revision}${sha1}${changelist}</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <name>OpenLegacy BRM provider</name>

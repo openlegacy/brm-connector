@@ -86,43 +86,61 @@ data class OLBrmProperties(
     }.initialize(applicationContext)
   }
 
+  /**
+   * Properties which represents BRM Infranet properties based on the documentation - https://docs.oracle.com/cd/E16754_01/doc.75/e16702/prg_client_javapcm.htm#CHDDJIEC
+   */
   data class ProjectBrmProperties(
+    /**
+     * Login type: 0 or 1. The default is 1.
+     * A type 1 login requires the application to provide a username and password.
+     * A type 0 login is a trusted login that comes through a CM Proxy, for example, and does not require a username and password in the properties.
+     */
+    var login_type: Int = 1,
     /**
      * hostname.
      */
     var host: String = "",
     /**
+     * port.
+     */
+    var port: Int = 11960,
+    /**
+     * service name, e.g. /service/admin_client.
+     */
+    var service: String = "/service/admin_client",
+    /**
+     * A type 0 login requires a full POID (Portal Object ID) of the service
+     * A type 1 login uses a default value 1
+     */
+    var service_poid: Int = 1,
+    /**
+     * Required when Login type is 0.
+     * The number assigned to BRM database when the BRM Data Manager was installed.
+     */
+    var database_no: String = "",
+    /**
      * User with permissions to access the host.
      */
-    var user: String = "",
+    var username: String = "root.0.0.0.1",
     /**
      * Password of the user.
      */
-    var password: String = "",
+    var password: String = "password",
     /**
-     * By setting this to true, the internal HTTP client will trust self signed certificates. Note that this is not
-     * recommended. It is better to use a signed certificates or import the certificate in your JVM truststore.
+     * The optional property, by default it is empty.
+     * Represents the path to the Infranet.properties file which is commonly used for specifying connection details in the BRM system.
+     * Allows loading all required BRM properties from the specified file, ignoring BRM connection properties specified in the OpenLegacy properties.
+     * Could be useful in case when needed more fine-tuning for the BRM connection, when the standard BRM properties specified in OpenLegacy properties are not enough.
+     * Or in a case, when pre-configured Infranet.properties file re-used across several applications.
      */
-    var isTrustSelfSigned: Boolean = false,
+    var infranetPropertiesFilePath: String = "",
     /**
      * Sets the time in milliseconds before the HTTP client will drop the request.
      *
      * A timeout value of zero is interpreted as an infinite timeout.
      * Setting zero or a negative value disables the timeout.
      */
-    var timeout: Int = DEFAULT_TIMEOUT,
-    var headers: Map<String, String> = mutableMapOf(),
-    var decimalSeparator: String = ".",
-    /**
-     * PEM formatted client certificate key
-     */
-    var clientCertificate: String = "",
-    /**
-     * PEM formatted client's private key
-     * To extract PEM key from JKS keystore check out
-     * @see <a href="https://dzone.com/articles/extracting-a-private-key-from-java-keystore-jks">Extracting Private Key from JKS Keystore</a>
-     */
-    var clientPrivateKey: String = ""
+    var timeout: Int = DEFAULT_TIMEOUT
   ) : RpcSdkProperties {
     override fun backendSolution(): BackendSolution = BackendSolution.MF_RPC // TODO: Change it to BRM when integrating into openlegacy-core repository
   }

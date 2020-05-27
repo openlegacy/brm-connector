@@ -103,10 +103,10 @@ class BrmRpcDeserializer(
   }
 
   private fun handleCollection(
-          data: BrmOutputRpcData,
-          collectionFieldDefinition: RpcCollectionFieldDefinition,
-          request: RpcDeserializeRequest<BrmOutputRpcData>,
-          innerClasses: MutableMap<String, RpcClassFieldDefinition>
+    data: BrmOutputRpcData,
+    collectionFieldDefinition: RpcCollectionFieldDefinition,
+    request: RpcDeserializeRequest<BrmOutputRpcData>,
+    innerClasses: MutableMap<String, RpcClassFieldDefinition>
   ) {
     val elementFieldDefinition: RpcFieldDefinition = collectionFieldDefinition.element
     val elementsArray = data.element as? JsonArray
