@@ -24,6 +24,7 @@ import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import mu.KLogging
 import org.apache.commons.lang3.StringUtils
+import org.openlegacy.utils.TimeUtils
 import org.openlegacy.utils.extensions.excludeHttpMethodFromPath
 import java.io.File
 import java.io.FileInputStream
@@ -52,8 +53,6 @@ class BrmRpcConnector(
 //      val relativePath = rpcData.relativeRequestUri
 //      val httpMethod = null
 //      val url = if (sdkProperties.host.isNotBlank()) UrlUtils.build(sdkProperties.host, relativePath) else relativePath
-//      // sets timeout
-//      val actualTimeout = TimeUtils.getTimeoutByPropagation(timeout, sdkProperties.timeout.toLong())
 //
 //
 //      val requestBody = rpcData.body
@@ -78,21 +77,25 @@ class BrmRpcConnector(
 //        properties = properties
 //      )
 //    }
+    // sets timeout
+    val actualTimeout = TimeUtils.getTimeoutByPropagation(timeout, sdkProperties.timeout.toLong())
+    brmConnectionProperties[BrmPropertiesConstants.PCM_TIMEOUT_IN_MSECS] = actualTimeout.toString()
+    connectPortalContext()
+
     val inflist = FList()
     // adds data to the flist
     inflist.set(FldPoid.getInst(), Poid(1))
     inflist.set(FldFirstName.getInst(), "Mickey")
     inflist.set(FldLastName.getInst(), "Mouse")
-    // Calls the opcode
     logger.debug { "Input: $inflist" }
-    connectPortalContext()
-    val outflist: FList = portalContext.opcode(PortalOp.TEST_LOOPBACK, inflist)
-    closePortalContext()
+    // Calls the opcode
+    val outflist: FList = sendFlist(PortalOp.TEST_LOOPBACK, inflist)
     logger.debug { "Output: $outflist" }
-      return RpcSendResult(
-        body = BrmOutputRpcData(body = Buffer.buffer()),
-        statusCode = 200
-      )
+    closePortalContext()
+    return RpcSendResult(
+      body = BrmOutputRpcData(body = Buffer.buffer()),
+      statusCode = 200
+    )
   }
 
   override fun prepareRpcData(request: RpcSerializeRequest): BrmInputRpcData {
@@ -115,9 +118,18 @@ class BrmRpcConnector(
     try {
       portalContext.connect(brmConnectionProperties)
       // prints out some info about the connection
-      logger.info("BRM connection successfully created: current DB: ${portalContext.currentDB}, user ID: ${portalContext.userID}")
+      logger.debug("BRM connection successfully created: current DB: ${portalContext.currentDB}, user ID: ${portalContext.userID}")
     } catch (ebufex: EBufException) {
-      logger.warn("BRM connection to the server failed, error: $ebufex")
+      logger.error("BRM connection to the server failed, error: $ebufex")
+      throw ebufex
+    }
+  }
+
+  private fun sendFlist(opcode: Int, flist: FList, opcodeFlags: Int = 0): FList {
+    try {
+      return portalContext.opcode(opcode, opcodeFlags, flist)
+    } catch (ebufex: EBufException) {
+      logger.error("Sending a request failed, error: $ebufex")
       throw ebufex
     }
   }
@@ -125,20 +137,20 @@ class BrmRpcConnector(
   private fun closePortalContext() {
     // closes the connection
     portalContext.close(true)
-    logger.info("BRM connection closed.")
+    logger.debug("BRM connection closed.")
   }
 
   private fun loadBrmConnectionProperties(sdkProperties: OLBrmProperties.ProjectBrmProperties): Properties {
     val props = Properties()
     // if path to the Infranet.propeties file is specified - loads all BRM connection properties from it, ignores OpenLegacy BRM connection properties.
-    if (StringUtils.isNotBlank(sdkProperties.infranetPropertiesFilePath) && File(sdkProperties.infranetPropertiesFilePath).exists()) {
-      FileInputStream(sdkProperties.infranetPropertiesFilePath).use {
+    if (StringUtils.isNotBlank(sdkProperties.infranet_properties_file_path) && File(sdkProperties.infranet_properties_file_path).exists()) {
+      FileInputStream(sdkProperties.infranet_properties_file_path).use {
         props.load(it)
         return props
       }
     }
     // otherwise, loads all BRM connection properties from OpenLegacy properties
-    props["infranet.login.type"] = sdkProperties.login_type.toString()
+    props[BrmPropertiesConstants.LOGIN_TYPE] = sdkProperties.login_type.toString()
     var connectionString = ""
     when (sdkProperties.login_type) {
       // For a type 1 login, the URL must include a user name and password. You must specify the service name and service (Portal Object ID) POID ("1")
@@ -148,7 +160,19 @@ class BrmRpcConnector(
       // The connection string is of the form: pcp://<hostname>:<port>/<database_no>/<service>:<service_poid>
       0 -> connectionString = "pcp://${sdkProperties.host}:${sdkProperties.port}/${sdkProperties.database_no}/${sdkProperties.service.removePrefix("/")}:${sdkProperties.service_poid}"
     }
-    props["infranet.connection"] = connectionString
+    props[BrmPropertiesConstants.CONNECTION] = connectionString
     return props
+  }
+
+  object BrmPropertiesConstants {
+    /**
+     * Infranet properties https://docs.oracle.com/cd/E16754_01/doc.75/e16702/prg_client_javapcm.htm#CHDDJIEC
+     */
+    const val LOGIN_TYPE = "infranet.login.type"
+    const val CONNECTION = "infranet.connection"
+    /**
+     * Timeout in milliseconds to drop the connection if the server doesn't reponse in case of error - https://docs.oracle.com/html/E16719_01/adm_monitor.htm
+     */
+    const val PCM_TIMEOUT_IN_MSECS = "PcmTimeoutInMsecs"
   }
 }

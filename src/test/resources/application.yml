@@ -3,4 +3,9 @@ ol:
     project:
       test:
         host: localhost
-
+        port: 11960
+        username: "root.0.0.0.1"
+        password: "password"
+        service: "/service/admin_client"
+        timeout: 5000
+        login_type: 1

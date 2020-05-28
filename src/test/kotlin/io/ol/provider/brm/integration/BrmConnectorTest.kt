@@ -1,8 +1,12 @@
 package io.ol.provider.brm.integration
 
+import io.ol.core.properties.RpcSdkProperties
 import io.ol.provider.brm.entity.EntityPlaceholder
 import io.ol.provider.brm.mock.BrmTestApplication
+import io.ol.provider.brm.properties.OLBrmProperties
 import mu.KLogging
+import openlegacy.test.utils.ConnectivityUtils
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.openlegacy.core.rpc.RpcSession
@@ -17,7 +21,13 @@ class BrmConnectorTest @Autowired constructor(
   val rpcSession: RpcSession
 ) {
 
-  companion object : KLogging()
+  companion object : KLogging() {
+    @BeforeAll
+    @JvmStatic
+    fun init() {
+      ConnectivityUtils.checkTcpConnection("localhost", 11960, 5000)
+    }
+  }
 
   @Test
   fun postSearchForPerson() {

@@ -10,7 +10,9 @@ import io.vertx.kotlin.coroutines.dispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mu.KLogging
+import openlegacy.test.utils.ConnectivityUtils
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.util.concurrent.TimeUnit
@@ -18,7 +20,13 @@ import java.util.concurrent.TimeUnit
 @ExtendWith(VertxExtension::class)
 class OperationTest : AbstractTest() {
 
-  companion object : KLogging()
+  companion object : KLogging() {
+    @BeforeAll
+    @JvmStatic
+    fun init() {
+      ConnectivityUtils.checkTcpConnection("localhost", 11960, 5000)
+    }
+  }
 
   @Test
   @Timeout(value = 15, timeUnit = TimeUnit.SECONDS)

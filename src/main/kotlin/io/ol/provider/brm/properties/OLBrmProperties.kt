@@ -25,9 +25,9 @@ data class OLBrmProperties(
   companion object {
     /**
      * Default timeout value (no timeout).
-     * If OLTimeoutProperties are provided, default value will be overridden with provided values in the init() method
+     * If [TimeoutProperties] are provided, default value will be overridden with provided values in the init() method
      */
-    const val DEFAULT_TIMEOUT = -1
+    const val DEFAULT_TIMEOUT = 0
   }
 
   /**
@@ -128,17 +128,14 @@ data class OLBrmProperties(
     var password: String = "password",
     /**
      * The optional property, by default it is empty.
-     * Represents the path to the Infranet.properties file which is commonly used for specifying connection details in the BRM system.
+     * Represents the full path to the external Infranet.properties file which is commonly used for specifying connection details in the BRM system.
      * Allows loading all required BRM properties from the specified file, ignoring BRM connection properties specified in the OpenLegacy properties.
-     * Could be useful in case when needed more fine-tuning for the BRM connection, when the standard BRM properties specified in OpenLegacy properties are not enough.
+     * Could be useful in case when needed more fine-tuning for the BRM connection, when the standard BRM connection properties specified in OpenLegacy properties are not enough.
      * Or in a case, when pre-configured Infranet.properties file re-used across several applications.
      */
-    var infranetPropertiesFilePath: String = "",
+    var infranet_properties_file_path: String = "",
     /**
-     * Sets the time in milliseconds before the HTTP client will drop the request.
-     *
-     * A timeout value of zero is interpreted as an infinite timeout.
-     * Setting zero or a negative value disables the timeout.
+     * Sets the time in milliseconds to wait before the BRM client will drop the request.
      */
     var timeout: Int = DEFAULT_TIMEOUT
   ) : RpcSdkProperties {
