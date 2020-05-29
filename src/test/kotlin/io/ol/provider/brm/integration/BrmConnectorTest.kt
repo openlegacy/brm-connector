@@ -1,9 +1,7 @@
 package io.ol.provider.brm.integration
 
-import io.ol.core.properties.RpcSdkProperties
 import io.ol.provider.brm.entity.EntityPlaceholder
 import io.ol.provider.brm.mock.BrmTestApplication
-import io.ol.provider.brm.properties.OLBrmProperties
 import mu.KLogging
 import openlegacy.test.utils.ConnectivityUtils
 import org.junit.jupiter.api.BeforeAll

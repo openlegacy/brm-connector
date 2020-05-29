@@ -2,19 +2,17 @@ package io.ol.provider.brm.connector
 
 import com.portal.pcm.EBufException
 import com.portal.pcm.FList
-import com.portal.pcm.Poid
 import com.portal.pcm.PortalContext
 import com.portal.pcm.PortalOp
-import com.portal.pcm.fields.FldFirstName
-import com.portal.pcm.fields.FldLastName
-import com.portal.pcm.fields.FldPoid
 import io.ol.core.rpc.connector.RpcConnector
 import io.ol.core.rpc.connector.RpcSendResult
+import io.ol.core.rpc.operation.OperationDefinition
 import io.ol.core.rpc.serialize.RpcDeserializer
 import io.ol.core.rpc.serialize.RpcSerializeRequest
 import io.ol.core.rpc.serialize.RpcSerializer
 import io.ol.core.tracing.TracingExecutor
 import io.ol.impl.common.debug.InternalDebug
+import io.ol.impl.common.debug.InternalDebugType
 import io.ol.provider.brm.properties.OLBrmProperties
 import io.ol.provider.brm.serialize.BrmInputRpcData
 import io.ol.provider.brm.serialize.BrmOutputRpcData
@@ -24,6 +22,7 @@ import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import mu.KLogging
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.math.NumberUtils
 import org.openlegacy.utils.TimeUtils
 import org.openlegacy.utils.extensions.excludeHttpMethodFromPath
 import java.io.File
@@ -49,53 +48,30 @@ class BrmRpcConnector(
   }
 
   override suspend fun send(rpcData: BrmInputRpcData, timeout: Long): RpcSendResult<BrmOutputRpcData> {
-//    return tracingExecutor.traceAwait("brm-rpc-inner-send") {
-//      val relativePath = rpcData.relativeRequestUri
-//      val httpMethod = null
-//      val url = if (sdkProperties.host.isNotBlank()) UrlUtils.build(sdkProperties.host, relativePath) else relativePath
-//
-//
-//      val requestBody = rpcData.body
-//      // sends body payload only if HTTP method is not GET
-//      val sendBodyPayload = httpMethod != HttpMethod.GET
-//      if (internalDebug.type != InternalDebugType.NONE) {
-//        internalDebug.handleRequest(request = requestBody.bytes, correlationId = System.currentTimeMillis().toString(), prefix = "brm")
-//      }
-//      val response: HttpResponse<Buffer> = if (sendBodyPayload) httpRequest.sendBufferAwait(requestBody) else httpRequest.sendAwait()
-//      val responseBody = response.body()
-//      if (internalDebug.type != InternalDebugType.NONE) {
-//        internalDebug.handleResponse(response = responseBody.bytes, correlationId = System.currentTimeMillis().toString(), prefix = "brm")
-//      }
-//      val properties: MutableMap<String, String> = mutableMapOf()
-//      properties[HttpLegacyTypes.StatusCode::class.java.name] = response.statusCode().toString()
-//      properties[HttpLegacyTypes.StatusMessage::class.java.name] = response.statusMessage()
-//
-//      return@traceAwait RpcSendResult(
-//        statusCode = response.statusCode(),
-//        body = BrmOutputRpcData(body = responseBody ?: Buffer.buffer()),
-//        headers = response.headers(),
-//        properties = properties
-//      )
-//    }
-    // sets timeout
-    val actualTimeout = TimeUtils.getTimeoutByPropagation(timeout, sdkProperties.timeout.toLong())
-    brmConnectionProperties[BrmPropertiesConstants.PCM_TIMEOUT_IN_MSECS] = actualTimeout.toString()
-    connectPortalContext()
-
-    val inflist = FList()
-    // adds data to the flist
-    inflist.set(FldPoid.getInst(), Poid(1))
-    inflist.set(FldFirstName.getInst(), "Mickey")
-    inflist.set(FldLastName.getInst(), "Mouse")
-    logger.debug { "Input: $inflist" }
-    // Calls the opcode
-    val outflist: FList = sendFlist(PortalOp.TEST_LOOPBACK, inflist)
-    logger.debug { "Output: $outflist" }
-    closePortalContext()
-    return RpcSendResult(
-      body = BrmOutputRpcData(body = Buffer.buffer()),
-      statusCode = 200
-    )
+    return tracingExecutor.traceAwait("brm-rpc-inner-send") {
+      val requestBody = rpcData.body
+      val opCode = rpcData.operationDefinition.getOpCode()
+      val opCodeFlag = rpcData.operationDefinition.getOpCodeFlag()
+      if (internalDebug.type != InternalDebugType.NONE) {
+        internalDebug.handleRequest(request = requestBody.bytes, correlationId = System.currentTimeMillis().toString(), prefix = "brm")
+      }
+      // sets timeout
+      val actualTimeout = TimeUtils.getTimeoutByPropagation(timeout, sdkProperties.timeout.toLong())
+      brmConnectionProperties[BrmPropertiesConstants.PCM_TIMEOUT_IN_MSECS] = actualTimeout.toString()
+      connectPortalContext()
+      // Calls the opcode
+      // TODO: consider storing a Flist instance in rpcData, so we don't do unnecessary toString/fromString operation
+      val outFlist: FList = sendFlist(opCode, FList.createFromString(requestBody.toString()), opCodeFlag)
+      closePortalContext()
+      val responseBody = Buffer.buffer(outFlist.asString())
+      if (internalDebug.type != InternalDebugType.NONE) {
+        internalDebug.handleResponse(response = responseBody.bytes, correlationId = System.currentTimeMillis().toString(), prefix = "brm")
+      }
+      return@traceAwait RpcSendResult(
+        statusCode = 200,
+        body = BrmOutputRpcData(body = responseBody ?: Buffer.buffer())
+      )
+    }
   }
 
   override fun prepareRpcData(request: RpcSerializeRequest): BrmInputRpcData {
@@ -125,9 +101,9 @@ class BrmRpcConnector(
     }
   }
 
-  private fun sendFlist(opcode: Int, flist: FList, opcodeFlags: Int = 0): FList {
+  private fun sendFlist(opcode: Int, flist: FList, opcodeFlag: Int = 0): FList {
     try {
-      return portalContext.opcode(opcode, opcodeFlags, flist)
+      return portalContext.opcode(opcode, opcodeFlag, flist)
     } catch (ebufex: EBufException) {
       logger.error("Sending a request failed, error: $ebufex")
       throw ebufex
@@ -174,5 +150,26 @@ class BrmRpcConnector(
      * Timeout in milliseconds to drop the connection if the server doesn't reponse in case of error - https://docs.oracle.com/html/E16719_01/adm_monitor.htm
      */
     const val PCM_TIMEOUT_IN_MSECS = "PcmTimeoutInMsecs"
+  }
+
+  /**
+   * The path of the operation must contain opcode in the format <Opcode_constant_name>, e.g. PCM_OP_CUST_FIND or <Opcode_int_value> e.g. 51
+   */
+  fun OperationDefinition.getOpCode(): Int {
+    var opCodeString = this.path.substringBeforeLast(":")
+    // opcode could be represented as a number, e.g. 80703
+    if (NumberUtils.isParsable(opCodeString)) {
+      return NumberUtils.toInt(opCodeString)
+    }
+    // opcode could be represented as a string constant, e.g. PCM_OP_CUST_FIND
+    opCodeString = opCodeString.substringAfter("PCM_OP_")
+    return PortalOp.stringToOp(opCodeString)
+  }
+
+  /**
+   * The path of the operation could contain addition opcode flag after the opcode in the format <Opcode>:<OpcodeFlag>, e.g. PCM_OP_CUST_FIND:32
+   */
+  fun OperationDefinition.getOpCodeFlag(): Int {
+    return this.path.substringAfterLast(":", "0").toInt()
   }
 }

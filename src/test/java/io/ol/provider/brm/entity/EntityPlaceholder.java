@@ -9,7 +9,7 @@ import org.openlegacy.core.model.entity.RpcEntityDefinition;
 
 @RpcEntity
 @RpcActions(actions = {
-        @Action(action = org.openlegacy.core.rpc.actions.RpcActions.EXECUTE.class, path = "PCM_OP_TEST_LOOPBACK_0", displayName = "LOOPBACK", alias = "LOOPBACK")
+        @Action(action = org.openlegacy.core.rpc.actions.RpcActions.EXECUTE.class, path = "PCM_OP_TEST_LOOPBACK:0", displayName = "LOOPBACK", alias = "LOOPBACK")
 })
 public class EntityPlaceholder implements org.openlegacy.core.rpc.RpcEntity {
 

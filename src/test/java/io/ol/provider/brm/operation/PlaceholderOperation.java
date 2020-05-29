@@ -13,7 +13,7 @@ import java.util.Map;
 @RpcOperation
 public class PlaceholderOperation implements Operation<EntityPlaceholder> {
     private final EntityPlaceholder input;
-    private final String path = "PCM_OP_TEST_LOOPBACK_0";
+    private final String path = "PCM_OP_TEST_LOOPBACK:0";
     @RpcOperationOutput(statusCode = 200, entityType = EntityPlaceholder.class)
     private final Map<Integer, RpcEntity> outputMap;
 

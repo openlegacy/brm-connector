@@ -54,7 +54,11 @@ class BrmRpcSerializer(
     return RpcSerializeResult(
       properties = request.properties,
       body = BrmInputRpcData(
-        body = Buffer.buffer(resultJson.toString()),
+        body = Buffer.buffer("""
+0 PIN_FLD_LAST_NAME                 STR [0] "Mouse"
+0 PIN_FLD_FIRST_NAME                STR [0] "Mickey"
+0 PIN_FLD_POID                      POID [0] 0.0.0.1 -1 0
+      """.trimIndent()), // Buffer.buffer(resultJson.toString()),
         operationDefinition = request.operationDefinition,
         headers = headers,
         relativeRequestUri = resultData.relativeRequestUri,
