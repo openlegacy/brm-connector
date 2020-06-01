@@ -1,8 +1,8 @@
 package io.ol.provider.brm.vertx
 
 import io.ol.core.rpc.RpcRequest
-import io.ol.provider.brm.entity.EntityPlaceholder
-import io.ol.provider.brm.operation.PlaceholderOperation
+import io.ol.provider.brm.entity.FListExampleEntity
+import io.ol.provider.brm.operation.FListExampleOperation
 import io.vertx.junit5.Timeout
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
@@ -33,14 +33,14 @@ class OperationTest : AbstractTest() {
   fun `placeholder`(testContext: VertxTestContext) {
     CoroutineScope(vertx.dispatcher()).launch {
       // GIVEN
-      var inputEntity = EntityPlaceholder()
-      val operation = PlaceholderOperation(inputEntity)
+      var inputEntity = FListExampleEntity()
+      val operation = FListExampleOperation(inputEntity)
       val rpcRequest = RpcRequest(
         operation = operation
       )
       // WHEN
       val response = rpcConnection.invoke(request = rpcRequest)
-      val responseEntity = response.body!! as EntityPlaceholder
+      val responseEntity = response.body!! as FListExampleEntity
       // THEN
       assertThat(response.statusCode).isEqualTo(200)
 

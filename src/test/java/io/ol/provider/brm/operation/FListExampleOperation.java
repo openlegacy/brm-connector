@@ -4,27 +4,27 @@ import io.ol.core.annotation.RpcOperation;
 import io.ol.core.annotation.RpcOperationOutput;
 import io.ol.core.rpc.operation.Operation;
 import io.ol.core.rpc.operation.OperationDefinition;
-import io.ol.provider.brm.entity.EntityPlaceholder;
+import io.ol.provider.brm.entity.FListExampleEntity;
 import org.jetbrains.annotations.NotNull;
 import org.openlegacy.core.rpc.RpcEntity;
 
 import java.util.Map;
 
 @RpcOperation
-public class PlaceholderOperation implements Operation<EntityPlaceholder> {
-    private final EntityPlaceholder input;
+public class FListExampleOperation implements Operation<FListExampleEntity> {
+    private final FListExampleEntity input;
     private final String path = "PCM_OP_TEST_LOOPBACK:0";
-    @RpcOperationOutput(statusCode = 200, entityType = EntityPlaceholder.class)
+    @RpcOperationOutput(statusCode = 200, entityType = FListExampleEntity.class)
     private final Map<Integer, RpcEntity> outputMap;
 
-    public PlaceholderOperation(EntityPlaceholder entityPlaceholder) {
-        this.input = entityPlaceholder;
-        this.outputMap = PlaceholderOperationHelper.initOutputMap();
+    public FListExampleOperation(FListExampleEntity fListExampleEntity) {
+        this.input = fListExampleEntity;
+        this.outputMap = FListExampleOperationHelper.initOutputMap();
     }
 
     @NotNull
     @Override
-    public EntityPlaceholder getInput() {
+    public FListExampleEntity getInput() {
         return input;
     }
 
@@ -43,7 +43,7 @@ public class PlaceholderOperation implements Operation<EntityPlaceholder> {
     @NotNull
     @Override
     public OperationDefinition operationDefinition() {
-        return PlaceholderOperationHelper.operationDefinition;
+        return FListExampleOperationHelper.operationDefinition;
     }
 
 }

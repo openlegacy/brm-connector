@@ -1,6 +1,6 @@
 package io.ol.provider.brm.integration
 
-import io.ol.provider.brm.entity.EntityPlaceholder
+import io.ol.provider.brm.entity.FListExampleEntity
 import io.ol.provider.brm.mock.BrmTestApplication
 import mu.KLogging
 import openlegacy.test.utils.ConnectivityUtils
@@ -30,7 +30,7 @@ class BrmConnectorTest @Autowired constructor(
   @Test
   fun postSearchForPerson() {
     // GIVEN
-    var rpcEntity = EntityPlaceholder()
+    var rpcEntity = FListExampleEntity()
     // WHEN
     rpcEntity = rpcSession.doAction(RpcActions.execute(), rpcEntity)
     // THEN
