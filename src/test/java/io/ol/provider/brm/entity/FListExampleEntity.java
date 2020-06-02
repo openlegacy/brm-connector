@@ -1,6 +1,7 @@
 package io.ol.provider.brm.entity;
 
-import com.portal.pcm.Poid;
+import io.ol.provider.brm.BrmLegacyTypes;
+import io.ol.provider.brm.OlPoid;
 import io.vertx.core.json.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.openlegacy.core.annotations.rpc.Action;
@@ -35,37 +36,37 @@ import java.util.List;
 })
 public class FListExampleEntity implements org.openlegacy.core.rpc.RpcEntity {
 
-    @RpcField(originalName = "PIN_FLD_POID")
-    private Poid pinFldPoid;
+    @RpcField(originalName = "PIN_FLD_POID", legacyType = BrmLegacyTypes.POID.class)
+    private OlPoid pinFldPoid = new OlPoid(1, -1, "/account");
 
     @RpcNumericField
-    @RpcField(originalName = "PIN_FLD_INT_VAL")
+    @RpcField(originalName = "PIN_FLD_INT_VAL", legacyType = BrmLegacyTypes.INT.class)
     private Integer pinFldIntVal;
 
-    @RpcField(originalName = "PIN_FLD_PROGRAM_NAME")
+    @RpcField(originalName = "PIN_FLD_PROGRAM_NAME", legacyType = BrmLegacyTypes.STR.class)
     private String pinFldProgramName;
 
-    @RpcField(originalName = "PIN_FLD_PAYINFO")
+    @RpcField(originalName = "PIN_FLD_PAYINFO", legacyType = BrmLegacyTypes.ARRAY.class)
     @RpcList
     private List<PinFldPayinfo> pinFldPayinfo;
 
     @RpcPart(name = "PinFldPayinfo")
     public static class PinFldPayinfo {
 
-        @RpcField(originalName = "PIN_FLD_POID")
-        private Poid pinFldPoid;
+        @RpcField(originalName = "PIN_FLD_POID", legacyType = BrmLegacyTypes.POID.class)
+        private OlPoid pinFldPoid;
 
-        @RpcField(originalName = "PIN_FLD_INHERITED_INFO")
+        @RpcField(originalName = "PIN_FLD_INHERITED_INFO", legacyType = BrmLegacyTypes.SUBSTRUCT.class)
         private PinFldInheritedInfo pinFldInheritedInfo;
 
         public PinFldPayinfo() {
         }
 
-        public Poid getPinFldPoid() {
+        public OlPoid getPinFldPoid() {
             return pinFldPoid;
         }
 
-        public void setPinFldPoid(Poid pinFldPoid) {
+        public void setPinFldPoid(OlPoid pinFldPoid) {
             this.pinFldPoid = pinFldPoid;
         }
 
@@ -81,7 +82,7 @@ public class FListExampleEntity implements org.openlegacy.core.rpc.RpcEntity {
     @RpcPart(name = "PinFldInheritedInfo")
     public static class PinFldInheritedInfo {
 
-        @RpcField(originalName = "PIN_FLD_CC_INFO")
+        @RpcField(originalName = "PIN_FLD_CC_INFO", legacyType = BrmLegacyTypes.ARRAY.class)
         @RpcList
         private List<PinFldCcInfo>  pinFldCcInfo;
 
@@ -100,13 +101,13 @@ public class FListExampleEntity implements org.openlegacy.core.rpc.RpcEntity {
     @RpcPart(name = "PinFldCcInfo")
     public static class PinFldCcInfo {
 
-        @RpcField(originalName = "PIN_FLD_DEBIT_EXP")
+        @RpcField(originalName = "PIN_FLD_DEBIT_EXP", legacyType = BrmLegacyTypes.STR.class)
         private String pinFldDebitExp;
 
-        @RpcField(originalName = "PIN_FLD_DEBIT_NUM")
+        @RpcField(originalName = "PIN_FLD_DEBIT_NUM", legacyType = BrmLegacyTypes.STR.class)
         private String pinFldDebitNum;
 
-        @RpcField(originalName = "PIN_FLD_NAME")
+        @RpcField(originalName = "PIN_FLD_NAME", legacyType = BrmLegacyTypes.STR.class)
         private String pinFldName;
 
         public PinFldCcInfo() {
@@ -140,11 +141,11 @@ public class FListExampleEntity implements org.openlegacy.core.rpc.RpcEntity {
     public FListExampleEntity() {
     }
 
-    public Poid getPinFldPoid() {
+    public OlPoid getPinFldPoid() {
         return pinFldPoid;
     }
 
-    public void setPinFldPoid(Poid pinFldPoid) {
+    public void setPinFldPoid(OlPoid pinFldPoid) {
         this.pinFldPoid = pinFldPoid;
     }
 

@@ -19,12 +19,6 @@ data class BrmInputRpcData(
    * Parent of the currently processed element (part, field, etc) to which added new inner fields in accordance with entity structure. Used during serialization.
    */
   val parentElement: Any? = null,
-  /**
-   * Represents relative request URI, e.g. "/api/v2/pet". Used during serialization.
-   * Needs to be modifiable as it is being processed on the field level of the entity hierarchy that is a dead-end from which we can't return updated data instance.
-   */
-  var relativeRequestUri: String = "",
-  val preferredFieldName: String? = null,
-  var rootNonStructuralField: String? = null,
+  val convertedFieldName: String? = null,
   val projectProperties: OLBrmProperties.ProjectBrmProperties
 ) : RpcData<Buffer>

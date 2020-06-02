@@ -9,3 +9,6 @@ ol:
         service: "/service/admin_client"
         timeout: 5000
         login_type: 1
+  debug:
+    internal:
+      type: LOG

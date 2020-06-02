@@ -24,7 +24,6 @@ import mu.KLogging
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.openlegacy.utils.TimeUtils
-import org.openlegacy.utils.extensions.excludeHttpMethodFromPath
 import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
@@ -85,7 +84,6 @@ class BrmRpcConnector(
       operationDefinition = request.operationDefinition,
       headers = request.headers,
       properties = request.properties,
-      relativeRequestUri = request.operationDefinition.excludeHttpMethodFromPath(),
       projectProperties = sdkProperties
     )
   }
@@ -149,7 +147,7 @@ class BrmRpcConnector(
     /**
      * Timeout in milliseconds to drop the connection if the server doesn't reponse in case of error - https://docs.oracle.com/html/E16719_01/adm_monitor.htm
      */
-    const val PCM_TIMEOUT_IN_MSECS = "PcmTimeoutInMsecs"
+    const val PCM_TIMEOUT_IN_MSECS = "infranet.PcmTimeoutInMsecs"
   }
 
   /**
