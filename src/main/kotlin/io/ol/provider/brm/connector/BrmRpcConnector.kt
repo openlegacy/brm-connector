@@ -17,15 +17,13 @@ import io.ol.provider.brm.properties.OLBrmProperties
 import io.ol.provider.brm.serialize.BrmInputRpcData
 import io.ol.provider.brm.serialize.BrmOutputRpcData
 import io.vertx.core.Vertx
-import io.vertx.core.buffer.Buffer
-import io.vertx.core.json.JsonArray
-import io.vertx.core.json.JsonObject
 import mu.KLogging
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.openlegacy.utils.TimeUtils
 import java.io.File
 import java.io.FileInputStream
+import java.nio.charset.StandardCharsets
 import java.util.Properties
 
 class BrmRpcConnector(
@@ -52,35 +50,28 @@ class BrmRpcConnector(
       val opCode = rpcData.operationDefinition.getOpCode()
       val opCodeFlag = rpcData.operationDefinition.getOpCodeFlag()
       if (internalDebug.type != InternalDebugType.NONE) {
-        internalDebug.handleRequest(request = requestBody.bytes, correlationId = System.currentTimeMillis().toString(), prefix = "brm")
+        internalDebug.handleRequest(request = requestBody.asString().toByteArray(StandardCharsets.UTF_8), correlationId = System.currentTimeMillis().toString(), prefix = "brm")
       }
       // sets timeout
       val actualTimeout = TimeUtils.getTimeoutByPropagation(timeout, sdkProperties.timeout.toLong())
       brmConnectionProperties[BrmPropertiesConstants.PCM_TIMEOUT_IN_MSECS] = actualTimeout.toString()
       connectPortalContext()
       // Calls the opcode
-      // TODO: consider storing a Flist instance in rpcData, so we don't do unnecessary toString/fromString operation
-      val outFlist: FList = sendFlist(opCode, FList.createFromString(requestBody.toString()), opCodeFlag)
+      val outFlist: FList = sendFlist(opCode, requestBody, opCodeFlag)
       closePortalContext()
-      val responseBody = Buffer.buffer(outFlist.asString())
       if (internalDebug.type != InternalDebugType.NONE) {
-        internalDebug.handleResponse(response = responseBody.bytes, correlationId = System.currentTimeMillis().toString(), prefix = "brm")
+        internalDebug.handleResponse(response = outFlist.asString().toByteArray(StandardCharsets.UTF_8), correlationId = System.currentTimeMillis().toString(), prefix = "brm")
       }
       return@traceAwait RpcSendResult(
         statusCode = 200,
-        body = BrmOutputRpcData(body = responseBody ?: Buffer.buffer())
+        body = BrmOutputRpcData(body = outFlist)
       )
     }
   }
 
   override fun prepareRpcData(request: RpcSerializeRequest): BrmInputRpcData {
-    val rpcDataBody = when (val body = request.input) {
-      is JsonObject -> body.toBuffer()
-      is JsonArray -> body.toBuffer()
-      else -> Buffer.buffer()
-    }
     return BrmInputRpcData(
-      body = rpcDataBody,
+      body = FList(),
       operationDefinition = request.operationDefinition,
       headers = request.headers,
       properties = request.properties,

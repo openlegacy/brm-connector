@@ -1,11 +1,11 @@
 package io.ol.provider.brm.serialize
 
+import com.portal.pcm.FList
 import io.ol.core.rpc.serialize.RpcData
 import io.vertx.core.MultiMap
-import io.vertx.core.buffer.Buffer
 
 data class BrmOutputRpcData(
-  override val body: Buffer,
+  override val body: FList,
   override val headers: MultiMap = MultiMap.caseInsensitiveMultiMap(),
   override val properties: Map<String, String> = mapOf(),
   /**
@@ -21,4 +21,4 @@ data class BrmOutputRpcData(
    * Could be **temporary** set to "false" if the current element has been already updated for the currently processed field.
    */
   val elementNeedsUpdate: Boolean = true
-) : RpcData<Buffer>
+) : RpcData<FList>

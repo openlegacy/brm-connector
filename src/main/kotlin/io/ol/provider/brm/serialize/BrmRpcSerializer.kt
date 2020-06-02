@@ -29,7 +29,6 @@ class BrmRpcSerializer(
     rpcData: BrmInputRpcData,
     request: RpcSerializeRequest
   ): RpcSerializeResult<BrmInputRpcData> {
-    logger.debug { "BRM serialization start ${rpcData.body}" }
     // sets the root FList Object. From now on all modifications will be performed inside of it
     val rootFList = FList()
     val result = super.serialize(rpcData.copy(parentElement = rootFList, rootElement = rootFList), request)
@@ -38,7 +37,7 @@ class BrmRpcSerializer(
     return RpcSerializeResult(
       properties = request.properties,
       body = BrmInputRpcData(
-        body = Buffer.buffer(rootFList.asString()),
+        body = rootFList,
         operationDefinition = request.operationDefinition,
         properties = resultData.properties,
         projectProperties = resultData.projectProperties

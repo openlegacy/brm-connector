@@ -1,13 +1,13 @@
 package io.ol.provider.brm.serialize
 
+import com.portal.pcm.FList
 import io.ol.core.rpc.operation.OperationDefinition
 import io.ol.core.rpc.serialize.RpcData
 import io.ol.provider.brm.properties.OLBrmProperties
 import io.vertx.core.MultiMap
-import io.vertx.core.buffer.Buffer
 
 data class BrmInputRpcData(
-  override val body: Buffer,
+  override val body: FList,
   override val headers: MultiMap = MultiMap.caseInsensitiveMultiMap(),
   override val properties: Map<String, String> = mapOf(),
   val operationDefinition: OperationDefinition,
@@ -21,4 +21,4 @@ data class BrmInputRpcData(
   val parentElement: Any? = null,
   val convertedFieldName: String? = null,
   val projectProperties: OLBrmProperties.ProjectBrmProperties
-) : RpcData<Buffer>
+) : RpcData<FList>
