@@ -1,29 +1,42 @@
 package io.ol.provider.brm.serialize
 
+import com.portal.pcm.ByteBuffer
 import com.portal.pcm.FList
+import com.portal.pcm.FileBuffer
+import com.portal.pcm.Poid
 import com.portal.pcm.SparseArray
 import io.ol.core.rpc.serialize.DynamicFieldFunctionsRegistry
 import io.ol.core.rpc.serialize.RpcDeserializeRequest
+import io.ol.core.rpc.serialize.RpcDeserializeResult
 import io.ol.core.rpc.serialize.RpcDeserializer
-import io.ol.core.util.DateTimeUtil
+import io.ol.provider.brm.BrmLegacyTypes
 import io.ol.provider.brm.utils.FListUtils
+import io.ol.provider.brm.utils.PoidUtils
 import io.vertx.core.json.JsonArray
 import mu.KLogging
+import org.apache.commons.io.IOUtils
 import org.openlegacy.core.model.field.FieldDefinition
 import org.openlegacy.core.model.field.RpcClassFieldDefinition
 import org.openlegacy.core.model.field.RpcCollectionFieldDefinition
-import org.openlegacy.core.model.field.RpcDateFieldDefinition
 import org.openlegacy.core.model.field.RpcFieldDefinition
 import org.openlegacy.core.model.field.RpcPrimitiveFieldDefinition
 import org.openlegacy.utils.RpcFieldDefinitionUtil
 import java.util.Enumeration
-
 
 class BrmRpcDeserializer(
   override val dynamicFieldFunctionsRegistry: DynamicFieldFunctionsRegistry
 ) : RpcDeserializer<BrmOutputRpcData> {
 
   companion object : KLogging()
+
+  override fun deserialize(
+    request: RpcDeserializeRequest<BrmOutputRpcData>
+  ): RpcDeserializeResult {
+    val responseBody = request.body.body
+    val updatedBody = request.body.copy(element = responseBody)
+    logger.debug { "BRM deserialization start" }
+    return super.deserialize(request.copy(body = updatedBody))
+  }
 
   /**
    * This method is always being executed when changing the hierarchy level of the entity during its traversing,
@@ -47,8 +60,8 @@ class BrmRpcDeserializer(
     val key = RpcFieldDefinitionUtil.getOriginalName(fieldDefinition)
     val flistField = FListUtils.getFlistField(key)
     val value = when (element) {
-      is FList -> element.getValue(flistField)
-      // is SparseArray -> data.elementIndex?.let { element.getValue(it) }
+      is FList -> element.get(flistField)
+      is Poid -> PoidUtils.getPoidProperty(element, key)
       else -> null
     }
     logger.debug { "Got new element: '$value' by key: '$key' from the parent element '$element'" }
@@ -58,12 +71,13 @@ class BrmRpcDeserializer(
   override fun primitive(data: BrmOutputRpcData, fieldDefinition: RpcPrimitiveFieldDefinition, request: RpcDeserializeRequest<BrmOutputRpcData>): Any? {
     logger.debug { "primitive: '${fieldDefinition.name}', data element: '${data.element}'" }
     var value = data.element ?: RpcFieldDefinitionUtil.getDefaultValue(fieldDefinition)
-    if (fieldDefinition is RpcDateFieldDefinition) {
-      value = DateTimeUtil.parseDate(
-        value as String?,
-        fieldDefinition.pattern,
-        fieldDefinition.locale,
-        fieldDefinition.timeZoneId)
+    value = when (fieldDefinition.legacyType) {
+      BrmLegacyTypes.BUF::class.java -> when (value) {
+        is FileBuffer -> IOUtils.toByteArray(value.inputStream)
+        is ByteBuffer -> value.bytes
+        else -> value
+      }
+      else -> value
     }
     return RpcFieldDefinitionUtil.toJsonData(fieldDefinition, value)
   }

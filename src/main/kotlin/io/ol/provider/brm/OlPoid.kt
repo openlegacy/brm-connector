@@ -20,21 +20,21 @@ class OlPoid @JvmOverloads constructor(
    * This number must be used by all programs, CMs, and DMs accessing that database.
    * Decimal dotted notation is used for the database number: 0.0.0.x, where x is the database number, such as 1057.
    */
-  var database_number: Long = PoidUtils.DEFAULT_DB,
+  var databaseNumber: Long = PoidUtils.DEFAULT_DB,
   /**
    * A unique 64-bit number assigned to each object.
    * Once assigned, the ID is never changed or re-used. The ID is a 64-bit number to accommodate the large number of objects that can exist within a single database.
    * The ID is guaranteed to be unique within a given database, not across databases.
    */
-    var object_id: Long = PoidUtils.DEFAULT_ID,
+    var objectId: Long = PoidUtils.DEFAULT_ID,
   /**
    * The class to which the object belongs, for example, /event and /service. Default value is only /.
    */
-  var object_type: String = PoidUtils.DEFAULT_TYPE,
+  var objectType: String = PoidUtils.DEFAULT_TYPE,
   /**
    * Revision number.
    * This value is being incremented automatically by the BRM system each time the object is being updated.
    * The user cannot change this value directly.
    */
-  var object_revision: Int = PoidUtils.DEFAULT_REV
+  var objectRevision: Int = PoidUtils.DEFAULT_REV
 )

@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import mu.KLogging
 import openlegacy.test.utils.ConnectivityUtils
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -33,7 +34,8 @@ class OperationTest : AbstractTest() {
   fun `placeholder`(testContext: VertxTestContext) {
     CoroutineScope(vertx.dispatcher()).launch {
       // GIVEN
-      var inputEntity = FListExampleEntity()
+      val inputEntity = FListExampleEntity()
+      inputEntity.pinFldProgramName = "program"
       val operation = FListExampleOperation(inputEntity)
       val rpcRequest = RpcRequest(
         operation = operation
@@ -43,6 +45,7 @@ class OperationTest : AbstractTest() {
       val responseEntity = response.body!! as FListExampleEntity
       // THEN
       assertThat(response.statusCode).isEqualTo(200)
+      Assertions.assertNotNull(responseEntity)
 
       testContext.completeNow()
     }.invokeOnCompletion { it?.run { testContext.failNow(it) } }

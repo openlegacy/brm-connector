@@ -13,22 +13,24 @@ import org.openlegacy.core.annotations.rpc.RpcNumericField;
 import org.openlegacy.core.annotations.rpc.RpcPart;
 import org.openlegacy.core.model.entity.RpcEntityDefinition;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 
 /**
  * Flist with a substructs:
- *
- *      0 PIN_FLD_POID                      POID [0] 0.0.0.1 /account -1 0
- *      0 PIN_FLD_INT_VAL                    INT [0] 42
- *      0 PIN_FLD_PROGRAM_NAME               STR [0] "Admin Manager 3"
- *      0 PIN_FLD_PAYINFO                  ARRAY [1] allocated 2, used 2
- *      1     PIN_FLD_POID                  POID [0] 0.0.0.1 /account -1 0
- *      1     PIN_FLD_INHERITED_INFO   SUBSTRUCT [0] allocated 1, used 1
- *      2         PIN_FLD_CC_INFO          ARRAY [0] allocated 3, used 3
- *      3             PIN_FLD_DEBIT_EXP      STR [0] "XXXX"
- *      3             PIN_FLD_DEBIT_NUM      STR [0] "XXXX"
- *      3             PIN_FLD_NAME           STR [0] "Joe Smith"
+ * <p>
+ * 0 PIN_FLD_POID                      POID [0] 0.0.0.1 /account -1 0
+ * 0 PIN_FLD_INT_VAL                    INT [0] 42
+ * 0 PIN_FLD_PROGRAM_NAME               STR [0] "Admin Manager 3"
+ * 0 PIN_FLD_PAYINFO                  ARRAY [0] allocated 2, used 2
+ * 1     PIN_FLD_POID                  POID [0] 0.0.0.1 /account -1 0
+ * 1     PIN_FLD_INHERITED_INFO   SUBSTRUCT [0] allocated 1, used 1
+ * 2         PIN_FLD_CC_INFO          ARRAY [0] allocated 3, used 3
+ * 3             PIN_FLD_DEBIT_EXP      STR [0] "XXXX"
+ * 3             PIN_FLD_DEBIT_NUM      STR [0] "XXXX"
+ * 3             PIN_FLD_NAME           STR [0] "Joe Smith"
  */
 @RpcEntity
 @RpcActions(actions = {
@@ -84,7 +86,7 @@ public class FListExampleEntity implements org.openlegacy.core.rpc.RpcEntity {
 
         @RpcField(originalName = "PIN_FLD_CC_INFO", legacyType = BrmLegacyTypes.ARRAY.class)
         @RpcList
-        private List<PinFldCcInfo>  pinFldCcInfo;
+        private List<PinFldCcInfo> pinFldCcInfo;
 
         public PinFldInheritedInfo() {
         }
@@ -104,11 +106,20 @@ public class FListExampleEntity implements org.openlegacy.core.rpc.RpcEntity {
         @RpcField(originalName = "PIN_FLD_DEBIT_EXP", legacyType = BrmLegacyTypes.STR.class)
         private String pinFldDebitExp;
 
-        @RpcField(originalName = "PIN_FLD_DEBIT_NUM", legacyType = BrmLegacyTypes.STR.class)
-        private String pinFldDebitNum;
+        @RpcField(originalName = "PIN_FLD_RESIDENCE_FLAG", legacyType = BrmLegacyTypes.ENUM.class)
+        private Integer pinFldResidenceFlag;
 
-        @RpcField(originalName = "PIN_FLD_NAME", legacyType = BrmLegacyTypes.STR.class)
-        private String pinFldName;
+        @RpcField(originalName = "PIN_FLD_AMOUNT", legacyType = BrmLegacyTypes.DECIMAL.class)
+        private BigDecimal pinFldAmount;
+
+        @RpcField(originalName = "PIN_FLD_DUE_DATE_T", legacyType = BrmLegacyTypes.TSTAMP.class)
+        private Date pinFldDueDateT;
+
+        @RpcField(originalName = "PIN_FLD_PROVIDER_IPADDR", legacyType = BrmLegacyTypes.BINSTR.class)
+        private byte[] pinFldProviderIpaddr;
+
+        @RpcField(originalName = "PIN_FLD_BUFFER", legacyType = BrmLegacyTypes.BUF.class)
+        private byte[] pinFldBuffer;
 
         public PinFldCcInfo() {
         }
@@ -121,20 +132,44 @@ public class FListExampleEntity implements org.openlegacy.core.rpc.RpcEntity {
             this.pinFldDebitExp = pinFldDebitExp;
         }
 
-        public String getPinFldDebitNum() {
-            return pinFldDebitNum;
+        public Integer getPinFldResidenceFlag() {
+            return pinFldResidenceFlag;
         }
 
-        public void setPinFldDebitNum(String pinFldDebitNum) {
-            this.pinFldDebitNum = pinFldDebitNum;
+        public void setPinFldResidenceFlag(Integer pinFldResidenceFlag) {
+            this.pinFldResidenceFlag = pinFldResidenceFlag;
         }
 
-        public String getPinFldName() {
-            return pinFldName;
+        public BigDecimal getPinFldAmount() {
+            return pinFldAmount;
         }
 
-        public void setPinFldName(String pinFldName) {
-            this.pinFldName = pinFldName;
+        public void setPinFldAmount(BigDecimal pinFldAmount) {
+            this.pinFldAmount = pinFldAmount;
+        }
+
+        public Date getPinFldDueDateT() {
+            return pinFldDueDateT;
+        }
+
+        public void setPinFldDueDateT(Date pinFldDueDateT) {
+            this.pinFldDueDateT = pinFldDueDateT;
+        }
+
+        public byte[] getPinFldProviderIpaddr() {
+            return pinFldProviderIpaddr;
+        }
+
+        public void setPinFldProviderIpaddr(byte[] pinFldProviderIpaddr) {
+            this.pinFldProviderIpaddr = pinFldProviderIpaddr;
+        }
+
+        public byte[] getPinFldBuffer() {
+            return pinFldBuffer;
+        }
+
+        public void setPinFldBuffer(byte[] pinFldBuffer) {
+            this.pinFldBuffer = pinFldBuffer;
         }
     }
 

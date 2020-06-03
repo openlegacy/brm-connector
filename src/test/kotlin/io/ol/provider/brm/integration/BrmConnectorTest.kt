@@ -5,7 +5,6 @@ import io.ol.provider.brm.entity.FListExampleEntity
 import io.ol.provider.brm.mock.BrmTestApplication
 import mu.KLogging
 import openlegacy.test.utils.ConnectivityUtils
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -15,6 +14,8 @@ import org.openlegacy.core.rpc.actions.RpcActions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.nio.charset.Charset
+import java.util.Date
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [BrmTestApplication::class])
@@ -33,21 +34,19 @@ class BrmConnectorTest @Autowired constructor(
   @Test
   fun checkSingleArrayItem() {
     // GIVEN
-    var rpcEntity = initFlistExampleEntity(1)
+    val inputEntity = initFlistExampleEntity(1)
     // WHEN
-    rpcEntity = rpcSession.doAction(RpcActions.execute(), rpcEntity)
+    val outputEntity = rpcSession.doAction(RpcActions.execute(), inputEntity)
     // THEN
-    Assertions.assertNotNull(rpcEntity)
   }
 
   @Test
   fun checkMultipleArrayItems() {
     // GIVEN
-    var rpcEntity = initFlistExampleEntity()
+    val inputEntity = initFlistExampleEntity()
     // WHEN
-    rpcEntity = rpcSession.doAction(RpcActions.execute(), rpcEntity)
+    val outputEntity = rpcSession.doAction(RpcActions.execute(), inputEntity)
     // THEN
-    Assertions.assertNotNull(rpcEntity)
   }
 
   private fun initFlistExampleEntity(listCount: Int = 3): RpcEntity {
@@ -69,8 +68,13 @@ class BrmConnectorTest @Autowired constructor(
         pinFldPayinfo.pinFldInheritedInfo.pinFldCcInfo.add(pinFldCcInfo)
 
         pinFldCcInfo.pinFldDebitExp = "exp $j"
-        pinFldCcInfo.pinFldDebitNum = "num $j"
-        pinFldCcInfo.pinFldName = "name $j"
+        pinFldCcInfo.pinFldAmount = "$j.$j".toBigDecimal()
+        pinFldCcInfo.pinFldResidenceFlag = j
+        // using non common encoding - 037 instead of UTF-8 to prove that byte array data will survive all transformations (RpcEntity -> JSON base64 -> FList -> Server -> FList -> JSON base64 -> RpcEntity)
+        pinFldCcInfo.pinFldProviderIpaddr = "Hello".toByteArray(Charset.forName("037"))
+        pinFldCcInfo.pinFldBuffer = byteArrayOf(0x1, 0x2, 0x3, 0x4, 0x5)
+        // subtracts j days from the current date
+        pinFldCcInfo.pinFldDueDateT = Date(System.currentTimeMillis() - (j * 1000 * 60 * 60 * 24))
       }
     }
     return rpcEntity

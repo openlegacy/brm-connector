@@ -5,7 +5,7 @@ import org.openlegacy.core.utils.StringUtil
 
 object FListUtils {
 
-  fun getFlistField(originalFieldName: String): Field {
+  fun getFlistField(originalFieldName: String): Field? {
     val flistFieldClassName = convertFieldName(originalFieldName)
     return Field.fromName(flistFieldClassName)
   }

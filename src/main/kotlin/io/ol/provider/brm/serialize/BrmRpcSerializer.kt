@@ -1,23 +1,28 @@
 package io.ol.provider.brm.serialize
 
+import com.portal.pcm.ByteBuffer
 import com.portal.pcm.FList
 import com.portal.pcm.SparseArray
 import io.ol.core.rpc.serialize.DynamicFieldFunctionsRegistry
 import io.ol.core.rpc.serialize.RpcSerializeRequest
 import io.ol.core.rpc.serialize.RpcSerializeResult
 import io.ol.core.rpc.serialize.RpcSerializer
+import io.ol.core.util.DateTimeUtil
 import io.ol.provider.brm.BrmLegacyTypes
 import io.ol.provider.brm.utils.FListUtils
 import io.ol.provider.brm.utils.PoidUtils
-import io.vertx.core.buffer.Buffer
 import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import mu.KLogging
 import org.openlegacy.core.model.field.RpcClassFieldDefinition
 import org.openlegacy.core.model.field.RpcCollectionFieldDefinition
+import org.openlegacy.core.model.field.RpcDateFieldDefinition
 import org.openlegacy.core.model.field.RpcFieldDefinition
 import org.openlegacy.core.model.field.RpcPrimitiveFieldDefinition
 import org.openlegacy.utils.RpcFieldDefinitionUtil
+import java.math.BigDecimal
+import java.nio.charset.StandardCharsets
+import java.util.Base64
 
 class BrmRpcSerializer(
   override val dynamicFieldFunctionsRegistry: DynamicFieldFunctionsRegistry
@@ -63,7 +68,38 @@ class BrmRpcSerializer(
   override fun primitive(rpcData: BrmInputRpcData, input: Any?, fieldDefinition: RpcPrimitiveFieldDefinition, request: RpcSerializeRequest) {
     logger.debug { "primitive: '${fieldDefinition.name}', input: '$input'" }
     var value = input ?: RpcFieldDefinitionUtil.getDefaultValue(fieldDefinition)
+    value = convertValueToLegacyType(fieldDefinition, value)
     updateDataElement(rpcData, fieldDefinition, value)
+  }
+
+  private fun convertValueToLegacyType(fieldDefinition: RpcPrimitiveFieldDefinition, value: Any?): Any? {
+    if (value == null) {
+      return null
+    }
+    return when (fieldDefinition.legacyType) {
+      BrmLegacyTypes.DECIMAL::class.java -> BigDecimal(value.toString())
+      BrmLegacyTypes.TSTAMP::class.java -> {
+        when (fieldDefinition) {
+          is RpcDateFieldDefinition -> DateTimeUtil.parseDate(
+            date = value.toString(),
+            pattern = fieldDefinition.pattern,
+            locale = fieldDefinition.locale,
+            timeZoneId = fieldDefinition.timeZoneId)
+          else -> DateTimeUtil.parseDate(value.toString(), null, null, null)
+        }
+      }
+      BrmLegacyTypes.BINSTR::class.java, BrmLegacyTypes.BUF::class.java -> {
+        // in the input JSON (which is being encoded by the vertx JacksonCodec) byte array is being encoded as base64 string
+        // that is why it decodes base64 string back to the original byte array
+        val byteArray = Base64.getDecoder().decode(value.toString().toByteArray(StandardCharsets.UTF_8))
+        return if (fieldDefinition.legacyType == BrmLegacyTypes.BUF::class.java) {
+          ByteBuffer(byteArray, 0, false)
+        } else {
+          byteArray
+        }
+      }
+      else -> value
+    }
   }
 
   override fun part(rpcData: BrmInputRpcData, input: JsonObject?, classFieldDefinition: RpcClassFieldDefinition, request: RpcSerializeRequest, classDefinitionsMap: MutableMap<String, RpcClassFieldDefinition>) {
