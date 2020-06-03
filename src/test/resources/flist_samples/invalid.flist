@@ -1,0 +1,3 @@
+0 PIN_FLD_INT_VAL                    INT [0] "text instead of integer value"
+0 PIN_FLD_PROGRAM_NAME               STR [0] 123
+

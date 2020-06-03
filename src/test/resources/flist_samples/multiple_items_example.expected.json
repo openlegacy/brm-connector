@@ -1,0 +1,104 @@
+{
+  "pinFldPoid" : {
+    "databaseNumber" : 1,
+    "objectId" : -1,
+    "objectType" : "/account",
+    "objectRevision" : 0
+  },
+  "pinFldIntVal" : 1,
+  "pinFldProgramName" : "program",
+  "pinFldPayinfo" : [ {
+    "pinFldPoid" : {
+      "databaseNumber" : 1,
+      "objectId" : -1,
+      "objectType" : "/account",
+      "objectRevision" : 0
+    },
+    "pinFldInheritedInfo" : {
+      "pinFldCcInfo" : [ {
+        "pinFldDebitExp" : "XXXX",
+        "pinFldResidenceFlag" : 1,
+        "pinFldAmount" : "1.1",
+        "pinFldDueDateT" : "2020-06-03",
+        "pinFldProviderIpaddr" : "yIWTk5Y=",
+        "pinFldBuffer" : "AQIDBAU="
+      }, {
+        "pinFldDebitExp" : "XXXX",
+        "pinFldResidenceFlag" : 2,
+        "pinFldAmount" : "2.2",
+        "pinFldDueDateT" : "2020-06-02",
+        "pinFldProviderIpaddr" : "yIWTk5Y=",
+        "pinFldBuffer" : "AQIDBAU="
+      }, {
+        "pinFldDebitExp" : "XXXX",
+        "pinFldResidenceFlag" : 3,
+        "pinFldAmount" : "3.3",
+        "pinFldDueDateT" : "2020-06-01",
+        "pinFldProviderIpaddr" : "yIWTk5Y=",
+        "pinFldBuffer" : "AQIDBAU="
+      } ]
+    }
+  }, {
+    "pinFldPoid" : {
+      "databaseNumber" : 1,
+      "objectId" : -1,
+      "objectType" : "/account",
+      "objectRevision" : 0
+    },
+    "pinFldInheritedInfo" : {
+      "pinFldCcInfo" : [ {
+        "pinFldDebitExp" : "XXXX",
+        "pinFldResidenceFlag" : 1,
+        "pinFldAmount" : "1.1",
+        "pinFldDueDateT" : "2020-06-03",
+        "pinFldProviderIpaddr" : "yIWTk5Y=",
+        "pinFldBuffer" : "AQIDBAU="
+      }, {
+        "pinFldDebitExp" : "XXXX",
+        "pinFldResidenceFlag" : 2,
+        "pinFldAmount" : "2.2",
+        "pinFldDueDateT" : "2020-06-02",
+        "pinFldProviderIpaddr" : "yIWTk5Y=",
+        "pinFldBuffer" : "AQIDBAU="
+      }, {
+        "pinFldDebitExp" : "XXXX",
+        "pinFldResidenceFlag" : 3,
+        "pinFldAmount" : "3.3",
+        "pinFldDueDateT" : "2020-06-01",
+        "pinFldProviderIpaddr" : "yIWTk5Y=",
+        "pinFldBuffer" : "AQIDBAU="
+      } ]
+    }
+  }, {
+    "pinFldPoid" : {
+      "databaseNumber" : 1,
+      "objectId" : -1,
+      "objectType" : "/account",
+      "objectRevision" : 0
+    },
+    "pinFldInheritedInfo" : {
+      "pinFldCcInfo" : [ {
+        "pinFldDebitExp" : "XXXX",
+        "pinFldResidenceFlag" : 1,
+        "pinFldAmount" : "1.1",
+        "pinFldDueDateT" : "2020-06-03",
+        "pinFldProviderIpaddr" : "yIWTk5Y=",
+        "pinFldBuffer" : "AQIDBAU="
+      }, {
+        "pinFldDebitExp" : "XXXX",
+        "pinFldResidenceFlag" : 2,
+        "pinFldAmount" : "2.2",
+        "pinFldDueDateT" : "2020-06-02",
+        "pinFldProviderIpaddr" : "yIWTk5Y=",
+        "pinFldBuffer" : "AQIDBAU="
+      }, {
+        "pinFldDebitExp" : "XXXX",
+        "pinFldResidenceFlag" : 3,
+        "pinFldAmount" : "3.3",
+        "pinFldDueDateT" : "2020-06-01",
+        "pinFldProviderIpaddr" : "yIWTk5Y=",
+        "pinFldBuffer" : "AQIDBAU="
+      } ]
+    }
+  } ]
+}

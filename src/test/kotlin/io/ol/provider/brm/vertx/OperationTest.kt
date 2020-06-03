@@ -3,6 +3,7 @@ package io.ol.provider.brm.vertx
 import io.ol.core.rpc.RpcRequest
 import io.ol.provider.brm.entity.FListExampleEntity
 import io.ol.provider.brm.operation.FListExampleOperation
+import io.ol.provider.brm.util.TestUtils
 import io.vertx.junit5.Timeout
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
@@ -31,12 +32,11 @@ class OperationTest : AbstractTest() {
 
   @Test
   @Timeout(value = 15, timeUnit = TimeUnit.SECONDS)
-  fun `placeholder`(testContext: VertxTestContext) {
+  fun `multipleArrayItemsTest`(testContext: VertxTestContext) {
     CoroutineScope(vertx.dispatcher()).launch {
       // GIVEN
-      val inputEntity = FListExampleEntity()
-      inputEntity.pinFldProgramName = "program"
-      val operation = FListExampleOperation(inputEntity)
+      val inputEntity = TestUtils.initFlistExampleEntity(3)
+      val operation = FListExampleOperation(inputEntity as FListExampleEntity?)
       val rpcRequest = RpcRequest(
         operation = operation
       )
