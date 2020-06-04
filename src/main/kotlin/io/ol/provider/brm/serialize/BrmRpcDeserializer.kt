@@ -72,7 +72,7 @@ class BrmRpcDeserializer(
     logger.debug { "primitive: '${fieldDefinition.name}', data element: '${data.element}'" }
     var value = data.element ?: RpcFieldDefinitionUtil.getDefaultValue(fieldDefinition)
     value = when (fieldDefinition.legacyType) {
-      BrmLegacyTypes.BUF::class.java -> when (value) {
+      BrmLegacyTypes.BUF::class.java.canonicalName -> when (value) {
         is FileBuffer -> IOUtils.toByteArray(value.inputStream)
         is ByteBuffer -> value.bytes
         else -> value

@@ -77,8 +77,8 @@ class BrmRpcSerializer(
       return null
     }
     return when (fieldDefinition.legacyType) {
-      BrmLegacyTypes.DECIMAL::class.java -> BigDecimal(value.toString())
-      BrmLegacyTypes.TSTAMP::class.java -> {
+      BrmLegacyTypes.DECIMAL::class.java.canonicalName -> BigDecimal(value.toString())
+      BrmLegacyTypes.TSTAMP::class.java.canonicalName -> {
         when (fieldDefinition) {
           is RpcDateFieldDefinition -> DateTimeUtil.parseDate(
             date = value.toString(),
@@ -88,11 +88,11 @@ class BrmRpcSerializer(
           else -> DateTimeUtil.parseDate(value.toString(), null, null, null)
         }
       }
-      BrmLegacyTypes.BINSTR::class.java, BrmLegacyTypes.BUF::class.java -> {
+      BrmLegacyTypes.BINSTR::class.java.canonicalName, BrmLegacyTypes.BUF::class.java.canonicalName -> {
         // in the input JSON (which is being encoded by the vertx JacksonCodec) byte array is being encoded as base64 string
         // that is why it decodes base64 string back to the original byte array
         val byteArray = Base64.getDecoder().decode(value.toString().toByteArray(StandardCharsets.UTF_8))
-        return if (fieldDefinition.legacyType == BrmLegacyTypes.BUF::class.java) {
+        return if (fieldDefinition.legacyType == BrmLegacyTypes.BUF::class.java.canonicalName) {
           ByteBuffer(byteArray, 0, false)
         } else {
           byteArray
@@ -104,7 +104,7 @@ class BrmRpcSerializer(
 
   override fun part(rpcData: BrmInputRpcData, input: JsonObject?, classFieldDefinition: RpcClassFieldDefinition, request: RpcSerializeRequest, classDefinitionsMap: MutableMap<String, RpcClassFieldDefinition>) {
     // POID is a non-primitive structure which represents Id, that is why it ended up being processed here
-    if (classFieldDefinition.legacyType == BrmLegacyTypes.POID::class.java) {
+    if (classFieldDefinition.legacyType == BrmLegacyTypes.POID::class.java.canonicalName) {
       updateDataElement(rpcData, classFieldDefinition, PoidUtils.initPoidFromJson(input))
       // exits the method as inner fields of the POID structure has been already processed and there is no need to go down the hierarchy
       return
