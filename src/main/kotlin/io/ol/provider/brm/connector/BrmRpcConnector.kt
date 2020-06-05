@@ -13,6 +13,7 @@ import io.ol.core.rpc.serialize.RpcSerializer
 import io.ol.core.tracing.TracingExecutor
 import io.ol.impl.common.debug.InternalDebug
 import io.ol.impl.common.debug.InternalDebugType
+import io.ol.provider.brm.BrmConstants
 import io.ol.provider.brm.properties.OLBrmProperties
 import io.ol.provider.brm.serialize.BrmInputRpcData
 import io.ol.provider.brm.serialize.BrmOutputRpcData
@@ -144,8 +145,8 @@ class BrmRpcConnector(
   /**
    * The path of the operation must contain opcode in the format <Opcode_constant_name>, e.g. PCM_OP_CUST_FIND or <Opcode_int_value> e.g. 51
    */
-  fun OperationDefinition.getOpCode(): Int {
-    var opCodeString = this.path.substringBeforeLast(":")
+  private fun OperationDefinition.getOpCode(): Int {
+    var opCodeString = this.path
     // opcode could be represented as a number, e.g. 80703
     if (NumberUtils.isParsable(opCodeString)) {
       return NumberUtils.toInt(opCodeString)
@@ -156,9 +157,9 @@ class BrmRpcConnector(
   }
 
   /**
-   * The path of the operation could contain addition opcode flag after the opcode in the format <Opcode>:<OpcodeFlag>, e.g. PCM_OP_CUST_FIND:32
+   * The properties of the operation could contain addition opcode flag
    */
-  fun OperationDefinition.getOpCodeFlag(): Int {
-    return this.path.substringAfterLast(":", "0").toInt()
+  private fun OperationDefinition.getOpCodeFlag(): Int {
+    return this.properties.getOrDefault(BrmConstants.OPCODE_FLAG, "0").toInt()
   }
 }

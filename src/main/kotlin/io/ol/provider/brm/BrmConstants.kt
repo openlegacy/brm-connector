@@ -6,7 +6,11 @@ package io.ol.provider.brm
  */
 object BrmConstants {
 
-  private val BRM_CONSTANTS: Collection<String> = listOf()
+  const val OPCODE_FLAG = "opCodeFlag"
+
+  private val BRM_CONSTANTS: Collection<String> = listOf(
+    OPCODE_FLAG
+  )
 
   fun isConstant(value: String): Boolean {
     return BRM_CONSTANTS.contains(value)

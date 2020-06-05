@@ -1,10 +1,12 @@
 package io.ol.provider.brm.entity;
 
+import io.ol.provider.brm.BrmConstants;
 import io.ol.provider.brm.BrmLegacyTypes;
 import io.ol.provider.brm.OlPoid;
 import io.vertx.core.json.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.openlegacy.core.annotations.rpc.Action;
+import org.openlegacy.core.annotations.rpc.ActionProperty;
 import org.openlegacy.core.annotations.rpc.RpcActions;
 import org.openlegacy.core.annotations.rpc.RpcEntity;
 import org.openlegacy.core.annotations.rpc.RpcField;
@@ -38,7 +40,8 @@ import java.util.List;
  */
 @RpcEntity
 @RpcActions(actions = {
-        @Action(action = org.openlegacy.core.rpc.actions.RpcActions.EXECUTE.class, path = "PCM_OP_TEST_LOOPBACK:0", displayName = "LOOPBACK", alias = "LOOPBACK")
+        @Action(action = org.openlegacy.core.rpc.actions.RpcActions.EXECUTE.class, path = "PCM_OP_TEST_LOOPBACK",
+                actionProperties = { @ActionProperty(name = BrmConstants.OPCODE_FLAG, value = "0") })
 })
 public class FListExampleEntity implements org.openlegacy.core.rpc.RpcEntity {
 
