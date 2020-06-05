@@ -1,0 +1,6 @@
+0 PIN_FLD_POID                      POID [0] NULL
+0 PIN_FLD_FIELD                    ARRAY [0] allocated 3, used 3
+1     PIN_FLD_FIELD_TYPE             INT [0] NULL
+1     PIN_FLD_FIELD_NUM             ENUM [0] NULL
+1     PIN_FLD_FIELD_NAME             STR [0] NULL
+0 PIN_FLD_FIELD                    ARRAY [1] NULL

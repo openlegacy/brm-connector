@@ -64,7 +64,7 @@ class BrmRpcDeserializer(
       is Poid -> PoidUtils.getPoidProperty(element, key)
       else -> null
     }
-    logger.debug { "Got new element: '$value' by key: '$key' from the parent element '$element'" }
+    logger.debug { "Got new element: '$value' by key: '$key' from the parent element" }
     return data.copy(element = value)
   }
 
@@ -78,6 +78,10 @@ class BrmRpcDeserializer(
         else -> value
       }
       else -> value
+    }
+    // for NULL values, FList Java SDK uses an empty Object instance
+    if (value?.javaClass == Object::class.java) {
+      value = null
     }
     return RpcFieldDefinitionUtil.toJsonData(fieldDefinition, value)
   }

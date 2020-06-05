@@ -2,6 +2,7 @@ package io.ol.provider.brm.serialize
 
 import com.portal.pcm.FList
 import io.ol.core.rpc.serialize.RpcDeserializeRequest
+import io.ol.provider.brm.entity.CustomFieldEntity
 import io.ol.provider.brm.entity.FListExampleEntity
 import io.ol.provider.brm.mock.BrmTestApplication
 import mu.KLogging
@@ -9,7 +10,6 @@ import org.apache.commons.io.IOUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.openlegacy.core.exceptions.OpenLegacyRuntimeException
 import org.openlegacy.core.rpc.RpcEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -30,6 +30,8 @@ class BrmRpcDeserializerTest @Autowired constructor(
     const val FLIST_EXAMPLE_SINGLE_ITEM = "single_item_example.flist"
     const val FLIST_EXAMPLE_MULTIPLE_ITEMS = "multiple_items_example.flist"
     const val FLIST_EMPTY = "empty.flist"
+    const val FLIST_LARGE_FIELD_LIST = "large_fields_list.flist"
+    const val FLIST_NULL_FIELDS = "null_fields.flist"
     const val FLIST_INVALID = "invalid.flist"
     const val FLIST_EXAMPLE_SINGLE_ITEM_EXPECTED = "single_item_example.expected.json"
     const val FLIST_EXAMPLE_MULTIPLE_ITEMS_EXPECTED = "multiple_items_example.expected.json"
@@ -79,6 +81,30 @@ class BrmRpcDeserializerTest @Autowired constructor(
     rpcEntity.populateFromJson(result.body)
     // THEN
     Assertions.assertTrue(rpcEntity.pinFldPayinfo.isEmpty())
+    logger.debug(rpcEntity.toJsonObject().encodePrettily())
+  }
+
+  @Test
+  fun deserializeNullFieldsResponse() {
+    // GIVEN
+    val rpcEntity = CustomFieldEntity()
+    // WHEN
+    val result = deserializer.deserialize(createDeserializeRequest(rpcEntity, FLIST_NULL_FIELDS))
+    rpcEntity.populateFromJson(result.body)
+    // THEN
+    Assertions.assertTrue(rpcEntity.pinFldField.isEmpty())
+    logger.debug(rpcEntity.toJsonObject().encodePrettily())
+  }
+
+  @Test
+  fun deserializeLargeResponse() {
+    // GIVEN
+    val rpcEntity = CustomFieldEntity()
+    // WHEN
+    val result = deserializer.deserialize(createDeserializeRequest(rpcEntity, FLIST_LARGE_FIELD_LIST))
+    rpcEntity.populateFromJson(result.body)
+    // THEN
+    Assertions.assertEquals(2419, rpcEntity.pinFldField.size)
     logger.debug(rpcEntity.toJsonObject().encodePrettily())
   }
 

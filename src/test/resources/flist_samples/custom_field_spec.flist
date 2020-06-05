@@ -1,0 +1,6 @@
+0 PIN_FLD_POID          POID [0] 0.0.0.1 /dd/fields 0 0
+0 PIN_FLD_FIELD      ARRAY [0]
+1    PIN_FLD_DESCR          STR [0] "custom field for holding a VAT number"
+1    PIN_FLD_FIELD_NAME      STR [0] "C_FLD_VAT_NUMBER"
+1    PIN_FLD_FIELD_NUM      ENUM [0] 10000
+1    PIN_FLD_FIELD_TYPE      INT [0] 5

@@ -19,7 +19,7 @@ import java.util.List;
 
 
 /**
- * Flist for creating/updating/deleting custom field specfification in the BRM system:
+ * Flist for creating/updating/deleting custom field specification in the BRM system:
  * <p>
  * 0 PIN_FLD_POID          POID [0] 0.0.0.1 /dd/fields 0 0
  * 0 PIN_FLD_FIELD      ARRAY [0]

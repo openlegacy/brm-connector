@@ -22,8 +22,6 @@ import mu.KLogging
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.openlegacy.utils.TimeUtils
-import java.io.File
-import java.io.FileInputStream
 import java.nio.charset.StandardCharsets
 import java.util.Properties
 
@@ -96,6 +94,7 @@ class BrmRpcConnector(
       return portalContext.opcode(opcode, opcodeFlag, flist)
     } catch (ebufex: EBufException) {
       logger.error("Sending a request failed, error: $ebufex")
+      closePortalContext()
       throw ebufex
     }
   }
@@ -107,30 +106,30 @@ class BrmRpcConnector(
   }
 
   private fun loadBrmConnectionProperties(sdkProperties: OLBrmProperties.ProjectBrmProperties): Properties {
-    val props = Properties()
-    // if path to the Infranet.propeties file is specified - loads all BRM connection properties from it, ignores OpenLegacy BRM connection properties.
-    if (StringUtils.isNotBlank(sdkProperties.infranet_properties_file_path) && File(sdkProperties.infranet_properties_file_path).exists()) {
-      FileInputStream(sdkProperties.infranet_properties_file_path).use {
-        props.load(it)
-        return props
+    // at first load all available properties from Infranet.properties file (if available)
+    val properties = Properties()
+    this.javaClass.getResourceAsStream("/${BrmPropertiesConstants.INFRANET_PROPERTIES_FILE_NAME}")?.use { stream -> properties.load(stream) }
+    // loads BRM connection properties from OpenLegacy properties, may overwrite properties loaded previously from Infranet.properties file
+
+    // will add connection string and login type only if host value is specified
+    if (StringUtils.isNotBlank(sdkProperties.host)) {
+      var connectionString = ""
+      when (sdkProperties.login_type) {
+        // For a type 1 login, the URL must include a user name and password. You must specify the service name and service (Portal Object ID) POID ("1")
+        // The connection string is of the form: pcp://<username>:<password>@<hostname>:<port><service>:<service_poid>
+        1 -> connectionString = "pcp://${sdkProperties.username}:${sdkProperties.password}@${sdkProperties.host}:${sdkProperties.port}/${sdkProperties.service.removePrefix("/")}:${sdkProperties.service_poid}"
+        // A type 0 login requires a full POID, including the database number.
+        // The connection string is of the form: pcp://<hostname>:<port>/<database_no>/<service>:<service_poid>
+        0 -> connectionString = "pcp://${sdkProperties.host}:${sdkProperties.port}/${sdkProperties.database_no}/${sdkProperties.service.removePrefix("/")}:${sdkProperties.service_poid}"
       }
+      properties[BrmPropertiesConstants.CONNECTION] = connectionString
+      properties[BrmPropertiesConstants.LOGIN_TYPE] = sdkProperties.login_type.toString()
     }
-    // otherwise, loads all BRM connection properties from OpenLegacy properties
-    props[BrmPropertiesConstants.LOGIN_TYPE] = sdkProperties.login_type.toString()
-    var connectionString = ""
-    when (sdkProperties.login_type) {
-      // For a type 1 login, the URL must include a user name and password. You must specify the service name and service (Portal Object ID) POID ("1")
-      // The connection string is of the form: pcp://<username>:<password>@<hostname>:<port><service>:<service_poid>
-      1 -> connectionString = "pcp://${sdkProperties.username}:${sdkProperties.password}@${sdkProperties.host}:${sdkProperties.port}/${sdkProperties.service.removePrefix("/")}:${sdkProperties.service_poid}"
-      // A type 0 login requires a full POID, including the database number.
-      // The connection string is of the form: pcp://<hostname>:<port>/<database_no>/<service>:<service_poid>
-      0 -> connectionString = "pcp://${sdkProperties.host}:${sdkProperties.port}/${sdkProperties.database_no}/${sdkProperties.service.removePrefix("/")}:${sdkProperties.service_poid}"
-    }
-    props[BrmPropertiesConstants.CONNECTION] = connectionString
-    return props
+    return properties
   }
 
   object BrmPropertiesConstants {
+    const val INFRANET_PROPERTIES_FILE_NAME = "Infranet.properties"
     /**
      * Infranet properties https://docs.oracle.com/cd/E16754_01/doc.75/e16702/prg_client_javapcm.htm#CHDDJIEC
      */

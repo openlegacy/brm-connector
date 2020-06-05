@@ -46,7 +46,7 @@ import java.util.List;
 public class FListExampleEntity implements org.openlegacy.core.rpc.RpcEntity {
 
     @RpcField(originalName = "PIN_FLD_POID", legacyType = BrmLegacyTypes.POID.class)
-    private OlPoid pinFldPoid = new OlPoid(1, -1, "/account");
+    private OlPoid pinFldPoid = new OlPoid(1, "/account",-1, 0);
 
     @RpcNumericField
     @RpcField(originalName = "PIN_FLD_INT_VAL", legacyType = BrmLegacyTypes.INT.class)

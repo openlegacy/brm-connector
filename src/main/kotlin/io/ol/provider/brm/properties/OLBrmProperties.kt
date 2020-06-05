@@ -121,19 +121,11 @@ data class OLBrmProperties(
     /**
      * User with permissions to access the host.
      */
-    var username: String = "root.0.0.0.1",
+    var username: String = "",
     /**
      * Password of the user.
      */
-    var password: String = "password",
-    /**
-     * The optional property, by default it is empty.
-     * Represents the full path to the external Infranet.properties file which is commonly used for specifying connection details in the BRM system.
-     * Allows loading all required BRM properties from the specified file, ignoring BRM connection properties specified in the OpenLegacy properties.
-     * Could be useful in case when needed more fine-tuning for the BRM connection, when the standard BRM connection properties specified in OpenLegacy properties are not enough.
-     * Or in a case, when pre-configured Infranet.properties file re-used across several applications.
-     */
-    var infranet_properties_file_path: String = "",
+    var password: String = "",
     /**
      * Sets the time in milliseconds to wait before the BRM client will drop the request.
      */

@@ -19,6 +19,5 @@ data class BrmInputRpcData(
    * Parent of the currently processed element (part, field, etc) to which added new inner fields in accordance with entity structure. Used during serialization.
    */
   val parentElement: Any? = null,
-  val convertedFieldName: String? = null,
   val projectProperties: OLBrmProperties.ProjectBrmProperties
 ) : RpcData<FList>

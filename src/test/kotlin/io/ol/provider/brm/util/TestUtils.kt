@@ -10,7 +10,7 @@ object TestUtils {
 
   fun initFlistExampleEntity(listCount: Int = 1): RpcEntity {
     val rpcEntity = FListExampleEntity()
-    rpcEntity.pinFldPoid = OlPoid(1, -1, "/account")
+    rpcEntity.pinFldPoid = OlPoid(1, "/account", -1, 0)
     rpcEntity.pinFldIntVal = 1
     rpcEntity.pinFldProgramName = "program"
     rpcEntity.pinFldPayinfo = mutableListOf()
@@ -18,7 +18,7 @@ object TestUtils {
       val pinFldPayinfo: FListExampleEntity.PinFldPayinfo = FListExampleEntity.PinFldPayinfo()
       rpcEntity.pinFldPayinfo.add(pinFldPayinfo)
 
-      pinFldPayinfo.pinFldPoid = OlPoid(1, -1, "/account")
+      pinFldPayinfo.pinFldPoid = OlPoid(1, "/account", -1, 0)
       pinFldPayinfo.pinFldInheritedInfo = FListExampleEntity.PinFldInheritedInfo()
       pinFldPayinfo.pinFldInheritedInfo.pinFldCcInfo = mutableListOf()
 

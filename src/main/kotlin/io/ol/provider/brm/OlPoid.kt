@@ -22,15 +22,15 @@ class OlPoid @JvmOverloads constructor(
    */
   var databaseNumber: Long = PoidUtils.DEFAULT_DB,
   /**
+   * The class to which the object belongs, for example, /event and /service. Default value is only /.
+   */
+  var objectType: String = PoidUtils.DEFAULT_TYPE,
+  /**
    * A unique 64-bit number assigned to each object.
    * Once assigned, the ID is never changed or re-used. The ID is a 64-bit number to accommodate the large number of objects that can exist within a single database.
    * The ID is guaranteed to be unique within a given database, not across databases.
    */
-    var objectId: Long = PoidUtils.DEFAULT_ID,
-  /**
-   * The class to which the object belongs, for example, /event and /service. Default value is only /.
-   */
-  var objectType: String = PoidUtils.DEFAULT_TYPE,
+  var objectId: Long = PoidUtils.DEFAULT_ID,
   /**
    * Revision number.
    * This value is being incremented automatically by the BRM system each time the object is being updated.

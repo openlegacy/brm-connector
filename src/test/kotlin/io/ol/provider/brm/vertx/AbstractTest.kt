@@ -17,7 +17,10 @@ abstract class AbstractTest {
   }
 
   private val sdkProperties = ProjectBrmProperties().apply {
+    // must match to the corresponding properties in the application.yml file
     host = "localhost"
+    username = "root.0.0.0.1"
+    password = "password"
   }
 
   private val rpcConnectionFactory = brmRpcConnectionFactory(

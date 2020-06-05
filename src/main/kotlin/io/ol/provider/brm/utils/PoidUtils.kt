@@ -28,18 +28,6 @@ object PoidUtils {
     )
   }
 
-  fun initJsonFromPoid(input: Poid?): JsonObject {
-    val result = JsonObject()
-    if (input == null) {
-      return result
-    }
-    result.put(DB_FIELD_NAME, input.db)
-    result.put(ID_FIELD_NAME, input.id)
-    result.put(TYPE_FIELD_NAME, input.type)
-    result.put(REV_FIELD_NAME, input.rev)
-    return result
-  }
-
   fun getPoidProperty(input: Poid?, key: String): Any? {
     if (input == null) {
       return null

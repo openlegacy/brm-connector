@@ -60,7 +60,7 @@ class BrmRpcSerializer(
       is FList -> value?.let { parent.set(flistField, it) }
       is SparseArray -> parent.add(value as FList?)
     }
-    logger.debug { "Added to parent object key: '$key' with value: '$value', parent object '$parent'" }
+    logger.debug { "Added to parent object key: '$key' with value: '$value'" }
     // sets the new value as the parent which allows going down the hierarchy. If the new value is a primitive (i.e. not a list or object) - it is OK as there is no more hierarchy below it
     return rpcData.copy(parentElement = value)
   }

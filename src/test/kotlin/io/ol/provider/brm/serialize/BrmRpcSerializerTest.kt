@@ -15,7 +15,6 @@ import org.junit.Assert
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.openlegacy.core.exceptions.OpenLegacyRuntimeException
 import org.openlegacy.core.rpc.RpcEntity
 import org.openlegacy.core.rpc.actions.RpcAction
 import org.openlegacy.core.rpc.actions.RpcActions

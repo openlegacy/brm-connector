@@ -14,9 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
+/**
+ * Echo test uses PCM_OP_TEST_LOOPBACK Opcode to return the request as the response from the BRM system
+ */
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [BrmTestApplication::class])
-class BrmConnectorTest @Autowired constructor(
+class BrmEchoTest @Autowired constructor(
   val rpcSession: RpcSession
 ) {
 

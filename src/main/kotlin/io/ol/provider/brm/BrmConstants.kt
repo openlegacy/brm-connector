@@ -6,6 +6,9 @@ package io.ol.provider.brm
  */
 object BrmConstants {
 
+  /**
+   * Represents an integer flag for the operation code
+   */
   const val OPCODE_FLAG = "opCodeFlag"
 
   private val BRM_CONSTANTS: Collection<String> = listOf(

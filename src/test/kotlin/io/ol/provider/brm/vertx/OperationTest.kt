@@ -46,6 +46,7 @@ class OperationTest : AbstractTest() {
       // THEN
       assertThat(response.statusCode).isEqualTo(200)
       Assertions.assertNotNull(responseEntity)
+      Assertions.assertEquals(inputEntity.toJsonObject(), responseEntity.toJsonObject())
 
       testContext.completeNow()
     }.invokeOnCompletion { it?.run { testContext.failNow(it) } }
