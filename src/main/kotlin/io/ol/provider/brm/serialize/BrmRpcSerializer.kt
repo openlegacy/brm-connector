@@ -10,7 +10,7 @@ import io.ol.core.rpc.serialize.RpcSerializer
 import io.ol.core.util.DateTimeUtil
 import io.ol.provider.brm.BrmLegacyTypes
 import io.ol.provider.brm.utils.FListUtils
-import io.ol.provider.brm.utils.PoidUtils
+import io.ol.provider.brm.utils.OlPoidUtils
 import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import mu.KLogging
@@ -105,7 +105,7 @@ class BrmRpcSerializer(
   override fun part(rpcData: BrmInputRpcData, input: JsonObject?, classFieldDefinition: RpcClassFieldDefinition, request: RpcSerializeRequest, classDefinitionsMap: MutableMap<String, RpcClassFieldDefinition>) {
     // POID is a non-primitive structure which represents Id, that is why it ended up being processed here
     if (classFieldDefinition.legacyType == BrmLegacyTypes.POID::class.java.canonicalName) {
-      updateDataElement(rpcData, classFieldDefinition, PoidUtils.initPoidFromJson(input))
+      updateDataElement(rpcData, classFieldDefinition, OlPoidUtils.initPoidFromJson(input))
       // exits the method as inner fields of the POID structure has been already processed and there is no need to go down the hierarchy
       return
     }

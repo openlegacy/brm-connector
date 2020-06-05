@@ -62,6 +62,7 @@ class BrmRpcConnector(
         internalDebug.handleResponse(response = outFlist.asString().toByteArray(StandardCharsets.UTF_8), correlationId = System.currentTimeMillis().toString(), prefix = "brm")
       }
       return@traceAwait RpcSendResult(
+        // BRM system doesn't have any response codes, thereby always returns 200 i.e. success code
         statusCode = 200,
         body = BrmOutputRpcData(body = outFlist)
       )
@@ -78,6 +79,9 @@ class BrmRpcConnector(
     )
   }
 
+  /**
+   * Connects PortalContext instance to the BRM system using pre-populated [brmConnectionProperties]
+   */
   private fun connectPortalContext() {
     try {
       portalContext.connect(brmConnectionProperties)
@@ -89,6 +93,10 @@ class BrmRpcConnector(
     }
   }
 
+  /**
+   * Sends provided FList instance to the provided opcode with provided opcode flag.
+   * PortalContext instance must be connected via [connectPortalContext] before calling this method.
+   */
   private fun sendFlist(opcode: Int, flist: FList, opcodeFlag: Int = 0): FList {
     try {
       return portalContext.opcode(opcode, opcodeFlag, flist)
@@ -99,12 +107,25 @@ class BrmRpcConnector(
     }
   }
 
+  /**
+   * Closes the PortalContext instance, if it was previously opened
+   */
   private fun closePortalContext() {
     // closes the connection
     portalContext.close(true)
     logger.debug("BRM connection closed.")
   }
 
+  /**
+   * For establishing connection, the connector must provide pre-populated Properties instance with connection properties.
+   *
+   * This method populates Properties instance from two sources:
+   * at first from the default Infranet.properties file from the classpath root, and at second - from the application.yml file.
+   *
+   * The properties from application.yml may override properties specified in the Infranet.properties file.
+   *
+   * When populating from application.yml file, it constructs required connection URL based on the OpenLegacy connection properties.
+   */
   private fun loadBrmConnectionProperties(sdkProperties: OLBrmProperties.ProjectBrmProperties): Properties {
     // at first load all available properties from Infranet.properties file (if available)
     val properties = Properties()
@@ -128,12 +149,26 @@ class BrmRpcConnector(
     return properties
   }
 
+  /**
+   * Holds properties names which specifid in Infranet.properties and used throughout BRM SDK classes (com.portal.pcm.*)
+   */
   object BrmPropertiesConstants {
+    /**
+     *  BRM SDK classes loads properties from the file with this constant name.
+     */
     const val INFRANET_PROPERTIES_FILE_NAME = "Infranet.properties"
     /**
-     * Infranet properties https://docs.oracle.com/cd/E16754_01/doc.75/e16702/prg_client_javapcm.htm#CHDDJIEC
+     * Infranet properties, their names and descriptions - https://docs.oracle.com/cd/E16754_01/doc.75/e16702/prg_client_javapcm.htm#CHDDJIEC
+     */
+    /**
+     * Specifies the type of login.
+     * A type 1 login requires the application to provide a user name and password.
+     * A type 0 login is a trusted login that comes through a CM Proxy, for example, and does not require a user name and password in the properties file.
      */
     const val LOGIN_TYPE = "infranet.login.type"
+    /**
+     * Specifies the full URL to the BRM service.
+     */
     const val CONNECTION = "infranet.connection"
     /**
      * Timeout in milliseconds to drop the connection if the server doesn't reponse in case of error - https://docs.oracle.com/html/E16719_01/adm_monitor.htm

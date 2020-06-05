@@ -11,7 +11,7 @@ import io.ol.core.rpc.serialize.RpcDeserializeResult
 import io.ol.core.rpc.serialize.RpcDeserializer
 import io.ol.provider.brm.BrmLegacyTypes
 import io.ol.provider.brm.utils.FListUtils
-import io.ol.provider.brm.utils.PoidUtils
+import io.ol.provider.brm.utils.OlPoidUtils
 import io.vertx.core.json.JsonArray
 import mu.KLogging
 import org.apache.commons.io.IOUtils
@@ -48,7 +48,7 @@ class BrmRpcDeserializer(
   }
 
   /**
-   * Updates data with a corresponding JSON element. Finds a corresponding JSON element based on the current fieldDefinition.
+   * Updates data with a corresponding FList element. Finds a corresponding FList element based on the current fieldDefinition.
    */
   private fun updateDataElement(data: BrmOutputRpcData, fieldDefinition: FieldDefinition): BrmOutputRpcData {
     // if an element is marked as it doesn't need an update - it means that it is already updated to the current field hierarchy in another place
@@ -61,7 +61,7 @@ class BrmRpcDeserializer(
     val flistField = FListUtils.getFlistField(key)
     val value = when (element) {
       is FList -> element.get(flistField)
-      is Poid -> PoidUtils.getPoidProperty(element, key)
+      is Poid -> OlPoidUtils.getPoidProperty(element, key)
       else -> null
     }
     logger.debug { "Got new element: '$value' by key: '$key' from the parent element" }

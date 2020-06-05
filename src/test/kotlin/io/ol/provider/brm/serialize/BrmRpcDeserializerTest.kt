@@ -4,7 +4,7 @@ import com.portal.pcm.FList
 import io.ol.core.rpc.serialize.RpcDeserializeRequest
 import io.ol.provider.brm.entity.CustomFieldEntity
 import io.ol.provider.brm.entity.FListExampleEntity
-import io.ol.provider.brm.mock.BrmTestApplication
+import io.ol.provider.brm.BrmTestApplication
 import mu.KLogging
 import org.apache.commons.io.IOUtils
 import org.junit.jupiter.api.Assertions

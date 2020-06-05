@@ -1,6 +1,6 @@
 package io.ol.provider.brm.integration
 
-import io.ol.provider.brm.mock.BrmTestApplication
+import io.ol.provider.brm.BrmTestApplication
 import io.ol.provider.brm.util.TestUtils
 import mu.KLogging
 import openlegacy.test.utils.ConnectivityUtils

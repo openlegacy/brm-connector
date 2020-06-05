@@ -49,25 +49,22 @@ Below is an example of  the `application.yml` with all available connection prop
             database_no: ""
 
 The user could use already predefined ***Infranet.properties*** file which is commonly used for specifying connection details in the BRM system, instead of all connection properties specified above. 
-To do this, the user needs to specify  the full path to the external *Infranet.properties* file in the application.yml file.
-In this case, all required BRM properties will be loaded from the specified file, ignoring BRM connection properties specified in the OpenLegacy properties. 
+To do this, the user needs to place *Infranet.properties* file near the application.yml file.
+In this case, all required BRM properties will be loaded at first from the *Infranet.properties* file.
+If OpenLegacy connection properties also specified in the application.yml file at the same time, they will overwrite corresponding properties loaded from *Infranet.properties* file.
+
 It could be useful in case when needed more fine-tuning for the BRM connection when the standard BRM connection properties specified in OpenLegacy properties are not enough. 
 Or in a case, when pre-configured Infranet.properties file re-used across several applications. 
 
-    ol:
-      brm:
-        project:
-          <OpenLegacy SDK project Name>:
-            infranet_properties_file_path: "/usr/local/brm/Infranet.properties"
-
 ## Specifying Opcode and Opcode flag
 
-Opcode and opcode flag could be specified as the RpcEntity/RpcOperation path.
+Opcode and opcode flag could be specified as the RpcEntity action path and action properties, or as a path and property of the RpcOperation.
+
 The opcode is mandatory and could be represented in the following formats:
 - For default opcodes as opcode constant name, e.g. *PCM_OP_CUST_FIND* 
 - For custom and default opcodes as opcode integer value e.g. *51*
 
-The opcode flag is optional, represented by integer number and could be added after the opcode separated by ":"  in the format `<Opcode>:<OpcodeFlag>`, e.g. *PCM_OP_CUST_FIND:32*
+The opcode flag is optional, represented by integer number and could be added as RPC Action property or RpcOperation property
 
 ## Connection to Test Environment
 BRM connector uses _LIVE_ tests which connects to the BRM system test environment.  

@@ -3,7 +3,7 @@ package io.ol.provider.brm.customfields
 import com.portal.pcm.FList
 import com.portal.pcm.Field
 import customfields.CFldOlCustomField
-import io.ol.provider.brm.mock.BrmTestApplication
+import io.ol.provider.brm.BrmTestApplication
 import io.ol.provider.brm.utils.FListUtils
 import mu.KLogging
 import org.junit.jupiter.api.Assertions

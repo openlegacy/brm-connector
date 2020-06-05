@@ -97,7 +97,7 @@ data class OLBrmProperties(
      */
     var login_type: Int = 1,
     /**
-     * hostname.
+     * hostname without protocol, e.g. localhost or 127.0.0.1, etc.
      */
     var host: String = "",
     /**

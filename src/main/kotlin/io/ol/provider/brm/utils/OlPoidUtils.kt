@@ -3,7 +3,10 @@ package io.ol.provider.brm.utils
 import com.portal.pcm.Poid
 import io.vertx.core.json.JsonObject
 
-object PoidUtils {
+/**
+ * Utility class for handling [io.ol.provider.brm.OlPoid] and its conversion to [com.portal.pcm.Poid] and vice-versa
+ */
+object OlPoidUtils {
   /** default values are obtained from [com.portal.pcm.Poid.NULL_POID] */
   const val DEFAULT_DB: Long = 0
   const val DEFAULT_ID: Long = 0
@@ -16,6 +19,10 @@ object PoidUtils {
   private const val TYPE_FIELD_NAME: String = "objectType"
   private const val REV_FIELD_NAME: String = "objectRevision"
 
+  /**
+   * Creates and populates with values a new Poid instance based on the provided JSON object.
+   * Used during serialization.
+   */
   fun initPoidFromJson(input: JsonObject?): Poid {
     if (input == null) {
       return Poid.NULL_POID
@@ -28,6 +35,10 @@ object PoidUtils {
     )
   }
 
+  /**
+   * Allows to get a value of the corresponding field from a provided Poid instance.
+   * Used during deserialization.
+   */
   fun getPoidProperty(input: Poid?, key: String): Any? {
     if (input == null) {
       return null

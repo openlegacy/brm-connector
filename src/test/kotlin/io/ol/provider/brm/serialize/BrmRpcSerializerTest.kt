@@ -7,7 +7,8 @@ import io.ol.core.rpc.operation.OperationDefinition
 import io.ol.core.rpc.serialize.RpcSerializeRequest
 import io.ol.provider.brm.BrmRpcConnectionFactory
 import io.ol.provider.brm.entity.FListExampleEntity
-import io.ol.provider.brm.mock.BrmTestApplication
+import io.ol.provider.brm.BrmTestApplication
+import io.ol.provider.brm.entity.CustomFieldEntity
 import io.ol.provider.brm.util.TestUtils
 import mu.KLogging
 import org.apache.commons.io.IOUtils
@@ -36,6 +37,7 @@ class BrmRpcSerializerTest @Autowired constructor(
     private var samplesDir: File = Paths.get(SAMPLES_DIR.toURI()).toFile()
     const val FLIST_EXAMPLE_SINGLE_ITEM = "single_item_example.flist"
     const val FLIST_EXAMPLE_MULTIPLE_ITEMS = "multiple_items_example.flist"
+    const val FLIST_CUSTOM_FIELD_SPEC = "custom_field_spec.flist"
   }
 
   private fun readFileContent(fileName: String): String {
@@ -98,6 +100,23 @@ class BrmRpcSerializerTest @Autowired constructor(
     val inputBody = serialize(rpcEntity, RpcActions.execute())
     // THEN
     Assertions.assertEquals(readFileContent(FLIST_EXAMPLE_MULTIPLE_ITEMS), inputBody.asString())
+  }
+
+  @Test
+  fun serializeCustomFieldEntity() {
+    // GIVEN
+    val rpcEntity = CustomFieldEntity()
+    val pinFldField = CustomFieldEntity.PinFldField()
+    rpcEntity.pinFldField = listOf(pinFldField)
+
+    pinFldField.pinFldDescr = "custom field for holding a VAT number"
+    pinFldField.pinFldFieldName = "C_FLD_VAT_NUMBER"
+    pinFldField.pinFldFieldNum = 10000
+    pinFldField.pinFldFieldType = 5
+    // WHEN
+    val inputBody = serialize(rpcEntity, RpcActions.create())
+    // THEN
+    Assertions.assertEquals(readFileContent(FLIST_CUSTOM_FIELD_SPEC), inputBody.asString())
   }
 
   @Test

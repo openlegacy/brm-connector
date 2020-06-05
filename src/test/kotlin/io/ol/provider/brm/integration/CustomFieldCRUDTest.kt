@@ -1,7 +1,7 @@
 package io.ol.provider.brm.integration
 
 import io.ol.provider.brm.entity.CustomFieldEntity
-import io.ol.provider.brm.mock.BrmTestApplication
+import io.ol.provider.brm.BrmTestApplication
 import mu.KLogging
 import openlegacy.test.utils.ConnectivityUtils
 import org.junit.jupiter.api.Assertions

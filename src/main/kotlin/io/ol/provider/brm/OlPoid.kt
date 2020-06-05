@@ -1,6 +1,6 @@
 package io.ol.provider.brm
 
-import io.ol.provider.brm.utils.PoidUtils
+import io.ol.provider.brm.utils.OlPoidUtils
 import org.openlegacy.core.annotations.rpc.RpcPart
 
 /**
@@ -20,21 +20,21 @@ class OlPoid @JvmOverloads constructor(
    * This number must be used by all programs, CMs, and DMs accessing that database.
    * Decimal dotted notation is used for the database number: 0.0.0.x, where x is the database number, such as 1057.
    */
-  var databaseNumber: Long = PoidUtils.DEFAULT_DB,
+  var databaseNumber: Long = OlPoidUtils.DEFAULT_DB,
   /**
    * The class to which the object belongs, for example, /event and /service. Default value is only /.
    */
-  var objectType: String = PoidUtils.DEFAULT_TYPE,
+  var objectType: String = OlPoidUtils.DEFAULT_TYPE,
   /**
    * A unique 64-bit number assigned to each object.
    * Once assigned, the ID is never changed or re-used. The ID is a 64-bit number to accommodate the large number of objects that can exist within a single database.
    * The ID is guaranteed to be unique within a given database, not across databases.
    */
-  var objectId: Long = PoidUtils.DEFAULT_ID,
+  var objectId: Long = OlPoidUtils.DEFAULT_ID,
   /**
    * Revision number.
    * This value is being incremented automatically by the BRM system each time the object is being updated.
    * The user cannot change this value directly.
    */
-  var objectRevision: Int = PoidUtils.DEFAULT_REV
+  var objectRevision: Int = OlPoidUtils.DEFAULT_REV
 )

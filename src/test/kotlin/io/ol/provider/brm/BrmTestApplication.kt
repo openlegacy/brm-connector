@@ -1,4 +1,4 @@
-package io.ol.provider.brm.mock
+package io.ol.provider.brm
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
